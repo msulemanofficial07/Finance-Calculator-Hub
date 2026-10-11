@@ -228,5 +228,45 @@ h1 span { color: #20ad79; }
   .topbar { gap: 7px; padding: 0 14px; }
   .brand { gap: 5px; font-size: 12px; }
   .brand-mark { width: 27px; height: 27px; }
+}
+
+@media (max-width: 640px) {
+  .top-nav { font-size: 11px; }
+  .currency-picker select { font-size: 11px; }
+  .hero-text, .page-intro .intro-copy { font-size: 14px; }
+  .section-description, .learn-heading > p:last-child { font-size: 13px; line-height: 1.65; }
+  .tool-button strong { font-size: 11px; }
+  .tool-button small { font-size: 10px; }
+  .nav-note p { font-size: 11px; }
+  .calculator-title p:last-child { font-size: 12px; line-height: 1.55; }
+  .field label { font-size: 12px; }
+  .field input { min-height: 44px; font-size: 16px; }
+  .field-hint { font-size: 11px; line-height: 1.4; }
+  .calculate-button { min-height: 46px; font-size: 13px; }
+  .result-topline { font-size: 10px; }
+  .result-label { font-size: 12px; }
+  .result-value { font-size: 26px; }
+  .breakdown-item span { font-size: 11px; }
+  .breakdown-item strong { font-size: 13px; }
+  .chart-heading { font-size: 11px; }
+  .schedule-table { font-size: 11px; }
+  .disclaimer { font-size: 11px; line-height: 1.65; }
+  .learn-card p, .guide-article p, .guide-article li { font-size: 14px; line-height: 1.75; }
+  .learn-card h3, .related-tools h2 { font-size: 15px; }
+  .learn-link, .learn-callout a, .resource-links a { font-size: 12px; }
+  .formula { font-size: 11px; }
+  .guide-article h2 { font-size: 21px; }
+  .related-tools a, .guide-faq summary { font-size: 13px; }
+  .guide-faq details p { font-size: 13px; }
+  .breadcrumbs { font-size: 11px; }
+  .ad-slot > span { font-size: 10px; }
+  .ad-slot > small { font-size: 10px; }
+  .footer p, .footer > span, .footer-links a { font-size: 11px; }
+  .legal-page p, .legal-page li { font-size: 14px; line-height: 1.75; }
+  .legal-page .updated { font-size: 12px; }
+}
+
+@media (max-width: 370px) {
+  .top-nav { gap: 8px; font-size: 10px; }
   .tool-button { gap: 5px; }
 }
