@@ -92,15 +92,30 @@ h1 span { color: #20ad79; }
 .chart-wrap { margin-top: 19px; padding-top: 15px; border-top: 1px solid #e7efea; }
 .chart-heading { color: #607166; font-size: 9px; font-weight: 700; }
 .chart-heading span:last-child { color: #98a59e; font-weight: 400; }
-.chart { height: 110px; display: flex; align-items: end; gap: 5px; padding: 14px 2px 0; }
-.chart-bar { min-width: 4px; flex: 1; position: relative; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, #2bcb91, #a5e9ca); }
-.chart-bar:hover::after { content: attr(data-label); position: absolute; left: 50%; bottom: calc(100% + 5px); transform: translateX(-50%); padding: 4px 6px; color: white; background: var(--navy); border-radius: 4px; white-space: nowrap; font-size: 8px; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 15px; margin: 13px 0 0; color: #66766d; font-size: 10px; }
+.chart-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-dot { width: 9px; height: 9px; display: inline-block; border-radius: 50%; }
+.legend-dot-1 { background: #18a875; }
+.legend-dot-2 { background: #95a4b2; }
+.chart { width: 100%; margin-top: 5px; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart-grid-line { stroke: #e6eee9; stroke-width: 1; }
+.chart-axis-label { fill: #7c8982; font: 11px system-ui, sans-serif; }
+.chart-line-primary, .chart-line-secondary { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; }
+.chart-line-primary { stroke: #18a875; }
+.chart-line-secondary { stroke: #95a4b2; stroke-dasharray: 6 5; stroke-width: 2; }
+.chart-line-primary-point { fill: white; stroke: #18a875; stroke-width: 2; }
+.chart-line-secondary-point { fill: white; stroke: #95a4b2; stroke-width: 2; }
+.schedule-details { margin-top: 14px; border: 1px solid #e8efeb; border-radius: 7px; }
+.schedule-details summary { padding: 11px 13px; color: #347657; font-size: 12px; font-weight: 700; cursor: pointer; }
+.schedule-details[open] summary { border-bottom: 1px solid #e8efeb; }
 .schedule-wrap { overflow-x: auto; }
 .schedule-table { width: 100%; border-collapse: collapse; color: #728077; font-size: 9px; text-align: right; }
 .schedule-table th, .schedule-table td { padding: 8px 7px; border-bottom: 1px solid #e9f0ec; white-space: nowrap; }
 .schedule-table th:first-child, .schedule-table td:first-child { text-align: left; }
 .schedule-table th { color: #89968f; font-weight: 600; }
-.disclaimer { margin: 12px 0 0; color: #a0a9b2; font-size: 9px; line-height: 1.6; }
+.trade-breakdown { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.disclaimer { margin: 12px 0 0; color: #7a8791; font-size: 10px; line-height: 1.6; }
 .learn-section { padding: 68px max(8vw, 24px) 80px; background: #f8fafb; }
 .learn-heading { max-width: 1110px; margin: 0 auto 28px; }
 .learn-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 1110px; margin: auto; }
@@ -249,6 +264,9 @@ h1 span { color: #20ad79; }
   .breakdown-item span { font-size: 11px; }
   .breakdown-item strong { font-size: 13px; }
   .chart-heading { font-size: 11px; }
+  .chart-legend { font-size: 11px; }
+  .chart-axis-label { font-size: 12px; }
+  .schedule-details summary { font-size: 13px; }
   .schedule-table { font-size: 11px; }
   .disclaimer { font-size: 11px; line-height: 1.65; }
   .learn-card p, .guide-article p, .guide-article li { font-size: 14px; line-height: 1.75; }
