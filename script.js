@@ -141,11 +141,11 @@ if (!document.querySelector('#calculation-assumptions')) {
   form.insertAdjacentHTML('beforeend', '<p class="calculation-assumptions" id="calculation-assumptions"></p>');
 }
 if (!document.querySelector('#currency-note')) {
-  form.insertAdjacentHTML('beforeend', '<p class="currency-note" id="currency-note">Enter amounts in the selected currency. Changing the currency only changes the display; it does not convert amounts.</p>');
+  form.insertAdjacentHTML('beforeend', '<p class="currency-note" id="currency-note">Enter amounts in the selected currency. Changing the currency changes the display label only; it does not convert amounts.</p>');
 }
 
 function money(value) {
-  const locales = { USD: 'en-US', GBP: 'en-GB', AUD: 'en-AU', CAD: 'en-CA', EUR: 'en-IE' };
+  const locales = { PKR: 'en-PK', INR: 'en-IN', USD: 'en-US', GBP: 'en-GB', AUD: 'en-AU', CAD: 'en-CA', EUR: 'en-IE' };
   return new Intl.NumberFormat(locales[currencySelect.value] || 'en-US', {
     style: 'currency',
     currency: currencySelect.value,
