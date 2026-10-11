@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore free investment and money calculators: SIP, compound interest, lump-sum growth, crypto profit estimates and inflation. Clear assumptions, instant results.">
+    <meta name="theme-color" content="#101b2d">
+    <title>Free Finance Calculators &amp; Investment Tools | FinanceHub</title>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Free Finance Calculators | FinanceHub">
+    <meta property="og:description" content="Explore free tools for investment growth, crypto profit estimates and inflation.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="Finance Calculator Hub home">
+        <span class="brand-mark" aria-hidden="true">F</span>
+        <span>Finance<span class="brand-light">Hub</span></span>
+      </a>
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="#calculators">Calculators</a>
+        <a href="#learn">Learn</a>
+        <a href="about.html">About</a>
+      </nav>
+      <label class="currency-picker">
+        <span>Currency</span>
+        <select id="currency" aria-label="Display currency">
+          <option value="USD">USD $</option>
+          <option value="GBP">GBP £</option>
+          <option value="AUD">AUD A$</option>
+          <option value="CAD">CAD C$</option>
+          <option value="EUR">EUR €</option>
+        </select>
+      </label>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> SIMPLE TOOLS. SMARTER DECISIONS.</p>
+          <h1>Make your next<br><span>money move</span> with clarity.</h1>
+          <p class="hero-text">Explore your investment growth, understand inflation, and estimate crypto gains with free, easy-to-use calculators.</p>
+          <a class="primary-link" href="#calculators">Explore the calculators <span aria-hidden="true">↘</span></a>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="hero-card">
+            <span class="hero-card-label">YOUR FINANCIAL SNAPSHOT</span>
+            <div class="hero-chart">
+              <span style="height: 35%"></span><span style="height: 47%"></span><span style="height: 42%"></span><span style="height: 61%"></span><span style="height: 55%"></span><span style="height: 76%"></span><span style="height: 69%"></span><span style="height: 92%"></span>
+            </div>
+            <div class="hero-card-footer"><span>Plan consistently</span><span class="trend">↗</span></div>
+          </div>
+          <span class="floating-tag tag-top">Built for clarity</span>
+          <span class="floating-tag tag-bottom">5 free calculators</span>
+        </div>
+      </section>
+
+      <aside class="ad-slot ad-banner" aria-label="Advertisement"><span>Advertisement</span><small>Banner placement · ad network code can be added after approval</small></aside>
+
+      <section class="calculator-section" id="calculators">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YOUR MONEY TOOLKIT</p>
+            <h2>What would you like to calculate?</h2>
+            <p class="section-description">Choose a tool, enter a few details, and explore an estimate.</p>
+          </div>
+          <span class="tool-count">01 <span>/ 05</span></span>
+        </div>
+
+        <div class="calculator-layout">
+          <aside class="tool-nav" aria-label="Choose a calculator">
+            <button class="tool-button active" type="button" data-tool="sip" aria-current="true"><span class="tool-icon">↗</span><span><strong>SIP calculator</strong><small>Monthly investing</small></span><span class="tool-arrow">→</span></button>
+            <button class="tool-button" type="button" data-tool="compound"><span class="tool-icon">∿</span><span><strong>Compound interest</strong><small>Growth over time</small></span><span class="tool-arrow">→</span></button>
+            <button class="tool-button" type="button" data-tool="crypto"><span class="tool-icon">₿</span><span><strong>Crypto profit &amp; tax</strong><small>Estimate a trade</small></span><span class="tool-arrow">→</span></button>
+            <button class="tool-button" type="button" data-tool="lumpsum"><span class="tool-icon">◈</span><span><strong>Lump-sum calculator</strong><small>One-time investment</small></span><span class="tool-arrow">→</span></button>
+            <button class="tool-button" type="button" data-tool="inflation"><span class="tool-icon">⌁</span><span><strong>Inflation calculator</strong><small>Future purchasing power</small></span><span class="tool-arrow">→</span></button>
+            <div class="nav-note"><span class="note-icon">✳</span><p>Estimates are for learning and planning—not a promise of future returns.</p></div>
+          </aside>
+
+          <section class="calculator-card" aria-live="polite" aria-labelledby="tool-title">
+            <div class="calculator-title">
+              <div>
+                <p class="eyebrow" id="tool-kicker">INVESTMENT PLANNER</p>
+                <h3 id="tool-title">SIP calculator</h3>
+                <p id="tool-description">Estimate how regular monthly investments may grow over time.</p>
+              </div>
+              <span class="calculator-symbol" id="tool-symbol" aria-hidden="true">↗</span>
+            </div>
+            <form id="calculator-form">
+              <div class="input-grid" id="input-grid"></div>
+              <button class="calculate-button" type="submit">Calculate estimate <span aria-hidden="true">→</span></button>
+            </form>
+            <div class="result-panel" id="result-panel" aria-live="polite">
+              <div class="result-topline"><span>YOUR ESTIMATE</span><span class="estimate-badge">Illustrative</span></div>
+              <p class="result-label" id="result-label">Estimated future value</p>
+              <p class="result-value" id="result-value">₹ 0</p>
+              <div class="result-breakdown" id="result-breakdown"></div>
+              <div class="chart-wrap" id="chart-wrap">
+                <div class="chart-heading"><span>Year-by-year projection</span><span id="chart-caption"></span></div>
+                <div class="chart" id="chart" role="img" aria-label="Projected balance chart"></div>
+                <div class="schedule-wrap"><table class="schedule-table"><thead id="schedule-head"></thead><tbody id="schedule-body"></tbody></table></div>
+              </div>
+            </div>
+            <p class="disclaimer">This calculator provides illustrative estimates only. Actual returns, fees, and taxes may differ. This is not financial, investment, or tax advice.</p>
+            <aside class="ad-slot ad-in-content" aria-label="Advertisement"><span>Advertisement</span><small>In-content placement · after calculator results</small></aside>
+          </section>
+        </div>
+      </section>
+
+      <section class="learn-section" id="learn">
+        <div class="learn-heading">
+          <p class="eyebrow">UNDERSTAND THE BASICS</p>
+          <h2>Know what goes into your estimate.</h2>
+          <p>These calculators use transparent assumptions so you can understand the numbers—not just the result.</p>
+        </div>
+        <div class="learn-grid">
+          <article class="learn-card"><span class="learn-number">01</span><h3>Regular investing (SIP)</h3><p>A systematic investment plan (SIP) invests a fixed amount at regular intervals. The estimate compounds monthly contributions at the annual return you enter. Market-linked returns are not guaranteed.</p><span class="formula">FV = P × [((1 + r)<sup>n</sup> − 1) / r] × (1 + r)</span><a class="learn-link" href="sip-calculator.html">Use the SIP calculator →</a></article>
+          <article class="learn-card"><span class="learn-number">02</span><h3>Compound interest</h3><p>Compound interest means earning returns on both your original principal and accumulated growth. This estimate assumes a constant annual rate compounded monthly.</p><span class="formula">A = P × (1 + r / 12)<sup>12t</sup></span><a class="learn-link" href="compound-interest-calculator.html">Explore compound interest →</a></article>
+          <article class="learn-card"><span class="learn-number">03</span><h3>Crypto profit &amp; tax</h3><p>Enter your buy price, sell price, quantity, fees, and an estimated tax rate. Tax rules differ by location and asset; confirm local rules with a qualified tax professional.</p><span class="formula">Estimated profit = sale proceeds − cost − fees</span><a class="learn-link" href="crypto-profit-calculator.html">Estimate a crypto trade →</a></article>
+          <article class="learn-card"><span class="learn-number">04</span><h3>Lump-sum growth</h3><p>A lump-sum investment puts in a single amount up front. The projection shows how monthly compounding at your chosen annual rate could affect its future value.</p><span class="formula">A = P × (1 + r / 12)<sup>12t</sup></span><a class="learn-link" href="lump-sum-calculator.html">Project a lump-sum investment →</a></article>
+          <article class="learn-card"><span class="learn-number">05</span><h3>Inflation &amp; purchasing power</h3><p>Inflation reduces what a fixed amount can buy over time. This calculator estimates the future purchasing power of today's money using the inflation rate you enter.</p><span class="formula">Future value in today's money = Amount / (1 + i)<sup>t</sup></span><a class="learn-link" href="inflation-calculator.html">Check inflation impact →</a></article>
+          <article class="learn-card learn-callout"><span class="callout-icon">✳</span><h3>Use estimates thoughtfully</h3><p>Change one assumption at a time to see how it affects your results. A calculator can help you explore scenarios, but it cannot predict markets or replace personalized advice.</p><a href="#calculators">Try a calculator <span aria-hidden="true">→</span></a></article>
+        </div>
+      </section>
+      <section class="resources-section" aria-labelledby="resources-title">
+        <div class="learn-heading"><p class="eyebrow">INDEPENDENT RESOURCES</p><h2 id="resources-title">Go beyond the estimate.</h2><p>Explore consumer education from public financial regulators. These links are not affiliate links.</p></div>
+        <div class="resource-links">
+          <a href="https://www.investor.gov/" target="_blank" rel="noopener noreferrer">U.S. SEC Investor.gov <span>↗</span></a>
+          <a href="https://www.moneyhelper.org.uk/" target="_blank" rel="noopener noreferrer">UK MoneyHelper <span>↗</span></a>
+          <a href="https://moneysmart.gov.au/" target="_blank" rel="noopener noreferrer">Australian Moneysmart <span>↗</span></a>
+          <a href="https://www.canada.ca/en/financial-consumer-agency.html" target="_blank" rel="noopener noreferrer">Canadian Financial Consumer Agency <span>↗</span></a>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true">F</span><span>Finance<span class="brand-light">Hub</span></span></a>
+      <p>Free tools to help you make sense of your money.</p>
+      <nav class="footer-links" aria-label="Legal and company information"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="disclaimer.html">Disclaimer</a><a href="affiliate-disclosure.html">Affiliate disclosure</a></nav>
+      <span>For education only · Not financial advice</span>
+    </footer>
+  </body>
+</html>

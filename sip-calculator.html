@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Estimate the future value of regular monthly investments with our free SIP calculator. Adjust your contribution, return assumption and time horizon.">
+    <meta name="theme-color" content="#101b2d">
+    <title>SIP Calculator: Monthly Investment Growth Estimate | FinanceHub</title>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Free SIP Calculator | FinanceHub">
+    <meta property="og:description" content="Estimate how regular monthly investments could grow over time.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body data-calculator="sip">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="FinanceHub home"><span class="brand-mark" aria-hidden="true">F</span><span>Finance<span class="brand-light">Hub</span></span></a>
+      <nav class="top-nav" aria-label="Main navigation"><a href="index.html#calculators">Calculators</a><a href="#guide">Guide</a><a href="about.html">About</a></nav>
+      <label class="currency-picker"><span>Currency</span><select id="currency" aria-label="Display currency"><option value="USD">USD $</option><option value="GBP">GBP £</option><option value="AUD">AUD A$</option><option value="CAD">CAD C$</option><option value="EUR">EUR €</option></select></label>
+    </header>
+    <main class="page-main">
+      <section class="page-intro"><div class="page-intro-inner">
+        <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / <a href="index.html#calculators">Calculators</a> / SIP calculator</nav>
+        <p class="eyebrow">MONTHLY INVESTING</p>
+        <h1>Free SIP Calculator</h1>
+        <p class="intro-copy">Estimate how a regular monthly investment might grow over time. Adjust your contribution, assumed annual return and investment period to compare scenarios in the currency you choose.</p>
+      </div></section>
+      <aside class="ad-slot ad-banner" aria-label="Advertisement"><span>Advertisement</span><small>Reserved banner placement</small></aside>
+      <section class="calculator-section"><div class="section-heading"><div><p class="eyebrow">PLAN A REGULAR CONTRIBUTION</p><h2>Explore your monthly investment estimate</h2><p class="section-description">Change an assumption and recalculate to compare possible outcomes.</p></div></div>
+        <div class="calculator-layout">
+          <aside class="tool-nav" aria-label="Other calculators">
+            <a class="tool-button" href="compound-interest-calculator.html"><span class="tool-icon">∿</span><span><strong>Compound interest</strong><small>Growth over time</small></span><span class="tool-arrow">→</span></a>
+            <a class="tool-button" href="crypto-profit-calculator.html"><span class="tool-icon">₿</span><span><strong>Crypto profit</strong><small>Estimate a trade</small></span><span class="tool-arrow">→</span></a>
+            <a class="tool-button" href="lump-sum-calculator.html"><span class="tool-icon">◈</span><span><strong>Lump sum</strong><small>One-time investment</small></span><span class="tool-arrow">→</span></a>
+            <a class="tool-button" href="inflation-calculator.html"><span class="tool-icon">⌁</span><span><strong>Inflation</strong><small>Purchasing power</small></span><span class="tool-arrow">→</span></a>
+            <aside class="ad-slot ad-sidebar" aria-label="Advertisement"><span>Advertisement</span><small>Reserved sidebar placement</small></aside>
+          </aside>
+          <section class="calculator-card" aria-labelledby="tool-title"><div class="calculator-title"><div><p class="eyebrow" id="tool-kicker"></p><h2 id="tool-title"></h2><p id="tool-description"></p></div><span class="calculator-symbol" id="tool-symbol" aria-hidden="true"></span></div>
+            <form id="calculator-form"><div class="input-grid" id="input-grid"></div><button class="calculate-button" type="submit">Calculate estimate <span aria-hidden="true">→</span></button></form>
+            <div class="result-panel" id="result-panel" aria-live="polite"><div class="result-topline"><span>YOUR ESTIMATE</span><span class="estimate-badge">Illustrative</span></div><p class="result-label" id="result-label"></p><p class="result-value" id="result-value"></p><div class="result-breakdown" id="result-breakdown"></div><div class="chart-wrap" id="chart-wrap"><div class="chart-heading"><span>Year-by-year projection</span><span id="chart-caption"></span></div><div class="chart" id="chart" role="img" aria-label="Projected balance chart"></div><div class="schedule-wrap"><table class="schedule-table"><thead id="schedule-head"></thead><tbody id="schedule-body"></tbody></table></div></div></div>
+            <p class="disclaimer">Illustrative estimate only; investment returns are not guaranteed. This is not financial or investment advice.</p>
+            <aside class="ad-slot ad-in-content" aria-label="Advertisement"><span>Advertisement</span><small>Reserved placement · after results</small></aside>
+          </section>
+        </div>
+      </section>
+      <section class="guide-section" id="guide"><div class="guide-layout">
+        <article class="guide-article">
+          <h2>What is a systematic investment plan?</h2>
+          <p>A systematic investment plan (SIP) is a way to invest a set amount at regular intervals, often monthly. Rather than choosing one large contribution date, an investor makes a series of smaller contributions. This calculator models that schedule; it does not recommend a particular investment or fund.</p>
+          <h2>How to use this SIP calculator</h2>
+          <p>Enter the amount you plan to contribute each month, an assumed annual rate of return and the number of years you expect to invest. Choose a display currency, then select <strong>Calculate estimate</strong>. The result separates total contributions from projected growth and shows an annual schedule.</p>
+          <ul><li><strong>Monthly investment:</strong> the regular contribution entered for each month.</li><li><strong>Annual return:</strong> a constant scenario assumption, not a forecast.</li><li><strong>Investment period:</strong> the number of years contributions continue.</li></ul>
+          <h2>Formula and assumptions</h2>
+          <p>The model adds each monthly contribution at the beginning of its month and applies the annual rate divided by 12. For a positive monthly rate, the resulting future value is <span class="formula">P × [((1 + r)<sup>n</sup> − 1) / r] × (1 + r)</span>, where P is the contribution, r is the monthly rate and n is the number of contributions. At a zero rate, the result is simply P × n. Contributions are assumed to remain constant; fees, taxes and changing returns are excluded.</p>
+          <h2>Interpreting a projection responsibly</h2>
+          <p>Investment values can rise or fall, and actual returns may differ substantially from a smooth projection. Try more than one return assumption to see how sensitive the estimate is. Consider your goals, time horizon, costs, risk tolerance and local rules; speak with a qualified professional if you need personal advice.</p>
+          <div class="guide-faq"><h2>Frequently asked questions</h2>
+            <details><summary>Are SIP returns guaranteed?</summary><p>No. This calculator uses a constant rate you choose for illustration. Market returns vary and may be negative.</p></details>
+            <details><summary>Does the estimate include fees or taxes?</summary><p>No. Fees, taxes and other investment-specific charges are not included in this estimate.</p></details>
+            <details><summary>Can I use this calculator outside India?</summary><p>Yes. Select a display currency and enter values in that currency. The calculation is a general contribution-growth illustration, not country-specific investment or tax guidance.</p></details>
+          </div>
+        </article>
+        <aside class="guide-aside"><nav class="related-tools" aria-label="Explore related calculators"><h2>Explore all calculators</h2><a href="compound-interest-calculator.html">Compound interest calculator →</a><a href="crypto-profit-calculator.html">Crypto profit estimator →</a><a href="lump-sum-calculator.html">Lump-sum calculator →</a><a href="inflation-calculator.html">Inflation calculator →</a></nav><aside class="ad-slot ad-sidebar" aria-label="Advertisement"><span>Advertisement</span><small>Reserved sidebar placement</small></aside></aside>
+      </div></section>
+    </main>
+    <footer class="footer"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">F</span><span>Finance<span class="brand-light">Hub</span></span></a><p>Free tools to help you make sense of your money.</p><nav class="footer-links" aria-label="Legal and company information"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="disclaimer.html">Disclaimer</a><a href="affiliate-disclosure.html">Affiliate disclosure</a></nav><span>For education only · Not financial advice</span></footer>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FinanceHub SIP Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","description":"A free SIP calculator for illustrative monthly investment growth estimates."}</script>
+  </body>
+</html>
