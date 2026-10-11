@@ -79,7 +79,10 @@ h1 span { color: #20ad79; }
 .field input:focus, .currency-picker select:focus { border-color: #49c999; box-shadow: 0 0 0 3px #49c99920; }
 .field input:invalid { border-color: #d77770; }
 .field-hint { color: #9ba5b1; font-size: 9px; }
-.live-update-note { margin: -3px 0 0; color: #748477; font-size: 11px; }
+.live-update-note { margin: -3px 0 0; color: #52695d; font-size: 12px; }
+.calculation-assumptions, .currency-note { margin: 10px 0 0; padding: 11px 12px; border-radius: 6px; font-size: 12px; line-height: 1.55; }
+.calculation-assumptions { color: #315744; background: #eff8f3; border-left: 3px solid #26c28a; }
+.currency-note { color: #506176; background: #f4f7fa; }
 .calculator-error { margin: 10px 0 0; color: #b42318; font-size: 12px; }
 .result-panel { margin-top: 22px; padding: 19px; border-radius: 8px; background: #f5fbf8; }
 .result-panel[hidden] { display: none; }
@@ -93,7 +96,7 @@ h1 span { color: #20ad79; }
 .breakdown-item span { display: block; margin-bottom: 5px; color: #66766d; font-size: 11px; }
 .breakdown-item strong { color: #203c2f; font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
 .trade-breakdown { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.disclaimer { margin: 12px 0 0; color: #7a8791; font-size: 10px; line-height: 1.6; }
+.disclaimer { margin: 12px 0 0; color: #526174; font-size: 12px; line-height: 1.65; }
 .learn-section { padding: 68px max(8vw, 24px) 80px; background: #f8fafb; }
 .learn-heading { max-width: 1110px; margin: 0 auto 28px; }
 .learn-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 1110px; margin: auto; }
@@ -178,18 +181,18 @@ h1 span { color: #20ad79; }
   .hero-text { font-size: 13px; }
   .calculator-section { padding: 57px 16px 60px; }
   .section-heading { margin-bottom: 19px; }
-  .section-heading h2 { max-width: 300px; font-size: 24px; }
+  .section-heading h2 { max-width: 300px; font-size: 25px; }
   .calculator-layout { grid-template-columns: 1fr; gap: 12px; }
   .tool-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
   .tool-button { min-height: 58px; gap: 8px; padding: 8px; }
   .tool-icon { width: 30px; height: 30px; flex-basis: 30px; }
-  .tool-button strong { font-size: 9px; }
-  .tool-button small { font-size: 8px; }
+  .tool-button strong { font-size: 12px; }
+  .tool-button small { font-size: 11px; }
   .tool-arrow { display: none; }
   .nav-note { grid-column: 1 / -1; margin-top: 4px; }
   .calculator-card { padding: 18px 15px; }
-  .calculator-title h2, .calculator-title h3 { font-size: 18px; }
-  .input-grid { gap: 13px 10px; }
+  .calculator-title h2, .calculator-title h3 { font-size: 20px; line-height: 1.3; }
+  .input-grid { grid-template-columns: 1fr; gap: 16px; }
   .field label { font-size: 9px; }
   .field input { height: 38px; padding: 0 8px; font-size: 11px; }
   .result-panel { padding: 14px; }
@@ -202,7 +205,7 @@ h1 span { color: #20ad79; }
   .ad-banner { margin-right: 16px; margin-left: 16px; }
   .page-intro { padding: 35px 18px 0; }
   .page-intro h1 { font-size: 34px; letter-spacing: -1.5px; }
-  .page-intro .intro-copy { font-size: 12px; }
+  .page-intro .intro-copy { font-size: 15px; line-height: 1.75; }
   .breadcrumbs { margin-bottom: 14px; }
   .page-main .calculator-section { padding: 28px 16px 45px; }
   .guide-section { padding: 15px 16px 50px; }
@@ -226,37 +229,39 @@ h1 span { color: #20ad79; }
 @media (max-width: 640px) {
   .top-nav { font-size: 11px; }
   .currency-picker select { font-size: 11px; }
-  .hero-text, .page-intro .intro-copy { font-size: 14px; }
-  .section-description, .learn-heading > p:last-child { font-size: 13px; line-height: 1.65; }
-  .tool-button strong { font-size: 11px; }
-  .tool-button small { font-size: 10px; }
-  .nav-note p { font-size: 11px; }
-  .calculator-title p:last-child { font-size: 12px; line-height: 1.55; }
-  .field label { font-size: 12px; }
-  .field input { min-height: 44px; font-size: 16px; }
-  .field-hint { font-size: 11px; line-height: 1.4; }
-  .calculate-button { min-height: 46px; font-size: 13px; }
-  .result-topline { font-size: 10px; }
-  .result-label { font-size: 12px; }
-  .result-value { font-size: 26px; }
-  .result-value { font-size: 30px; }
-  .breakdown-item span { font-size: 12px; }
-  .breakdown-item strong { font-size: 14px; }
-  .live-update-note, .calculator-error { font-size: 12px; }
-  .disclaimer { font-size: 11px; line-height: 1.65; }
-  .learn-card p, .guide-article p, .guide-article li { font-size: 14px; line-height: 1.75; }
-  .learn-card h3, .related-tools h2 { font-size: 15px; }
-  .learn-link, .learn-callout a, .resource-links a { font-size: 12px; }
-  .formula { font-size: 11px; }
-  .guide-article h2 { font-size: 21px; }
-  .related-tools a, .guide-faq summary { font-size: 13px; }
-  .guide-faq details p { font-size: 13px; }
-  .breadcrumbs { font-size: 11px; }
-  .ad-slot > span { font-size: 10px; }
-  .ad-slot > small { font-size: 10px; }
-  .footer p, .footer > span, .footer-links a { font-size: 11px; }
-  .legal-page p, .legal-page li { font-size: 14px; line-height: 1.75; }
-  .legal-page .updated { font-size: 12px; }
+  .hero-text, .page-intro .intro-copy { font-size: 15px; line-height: 1.75; }
+  .section-description, .learn-heading > p:last-child { font-size: 14px; line-height: 1.7; }
+  .tool-button strong { font-size: 12px; }
+  .tool-button small { font-size: 11px; }
+  .nav-note p { font-size: 12px; }
+  .calculator-title p:last-child { font-size: 14px; line-height: 1.6; }
+  .calculator-title .eyebrow { font-size: 10px; }
+  .field label { font-size: 14px; }
+  .field input { min-height: 48px; font-size: 16px; }
+  .field-hint { font-size: 12px; line-height: 1.5; }
+  .live-update-note, .calculator-error { font-size: 13px; line-height: 1.6; }
+  .calculation-assumptions, .currency-note { font-size: 13px; line-height: 1.65; }
+  .result-topline { font-size: 11px; }
+  .result-label { font-size: 14px; }
+  .result-value { font-size: 32px; }
+  .breakdown-item { padding: 13px; }
+  .breakdown-item span { font-size: 13px; }
+  .breakdown-item strong { font-size: 15px; }
+  .trade-breakdown { grid-template-columns: 1fr; }
+  .disclaimer { font-size: 13px; line-height: 1.7; }
+  .learn-card p, .guide-article p, .guide-article li { font-size: 15px; line-height: 1.8; }
+  .learn-card h3, .related-tools h2 { font-size: 17px; }
+  .learn-link, .learn-callout a, .resource-links a { font-size: 14px; }
+  .formula { font-size: 12px; }
+  .guide-article h2 { font-size: 22px; }
+  .related-tools a, .guide-faq summary { font-size: 15px; }
+  .guide-faq details p { font-size: 14px; }
+  .breadcrumbs { font-size: 12px; }
+  .ad-slot > span { font-size: 11px; }
+  .ad-slot > small { font-size: 11px; }
+  .footer p, .footer > span, .footer-links a { font-size: 12px; }
+  .legal-page p, .legal-page li { font-size: 15px; line-height: 1.8; }
+  .legal-page .updated { font-size: 13px; }
 }
 
 @media (max-width: 370px) {

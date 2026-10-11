@@ -4,9 +4,10 @@ const tools = {
     kicker: 'MONTHLY INVESTING',
     symbol: '↗',
     description: 'Estimate the future value of regular monthly contributions.',
+    assumption: 'Assumes the annual rate divided by 12 is applied monthly, with each contribution added at month-end.',
     fields: [
       { id: 'monthly', label: 'Monthly investment', value: 5000, min: 0.01, max: 100000000, step: 'any', hint: 'Your contribution each month' },
-      { id: 'rate', label: 'Expected annual return (%)', value: 12, min: -100, max: 100, step: 0.1, hint: 'An assumption, not a guarantee' },
+      { id: 'rate', label: 'Expected annual return (%)', value: 12, min: -100, max: 100, step: 'any', hint: 'An assumption, not a guarantee' },
       { id: 'years', label: 'Investment period (years)', value: 10, min: 1, max: 80, step: 1, hint: 'How many years you invest' }
     ],
     calculate: ({ monthly, rate, years }) => {
@@ -14,7 +15,7 @@ const tools = {
       const months = years * 12;
       const futureValue = monthlyRate === 0
         ? monthly * months
-        : monthly * ((1 + monthlyRate) ** months - 1) / monthlyRate;
+        : monthly * Math.expm1(months * Math.log1p(monthlyRate)) / monthlyRate;
       const invested = monthly * months;
       return {
         label: 'Estimated future value',
@@ -28,9 +29,10 @@ const tools = {
     kicker: 'INTEREST & GROWTH',
     symbol: '∿',
     description: 'See how an initial amount may grow when interest compounds annually.',
+    assumption: 'Assumes one compounding period per year. No extra deposits, fees, tax or inflation are included.',
     fields: [
       { id: 'principal', label: 'Initial amount', value: 10000, min: 0.01, max: 1000000000, step: 'any', hint: 'Your starting balance' },
-      { id: 'rate', label: 'Annual interest rate (%)', value: 6, min: 0, max: 100, step: 0.1, hint: 'Assumed rate, compounded yearly' },
+      { id: 'rate', label: 'Annual interest rate (%)', value: 6, min: 0, max: 100, step: 'any', hint: 'Assumed rate, compounded yearly' },
       { id: 'years', label: 'Time period (years)', value: 10, min: 1, max: 100, step: 1, hint: 'How many years it compounds' }
     ],
     calculate: ({ principal, rate, years }) => {
@@ -47,12 +49,13 @@ const tools = {
     kicker: 'TRADE SCENARIO',
     symbol: '₿',
     description: 'Estimate one trade after fees and an optional tax assumption.',
+    assumption: 'Tax is only an illustration: the entered rate is applied to a positive gain after fees. Actual tax rules vary.',
     fields: [
       { id: 'buyPrice', label: 'Buy price per coin', value: 50000, min: 0, max: 1000000000, step: 'any', hint: 'Your purchase price per coin' },
       { id: 'sellPrice', label: 'Sell price per coin', value: 60000, min: 0, max: 1000000000, step: 'any', hint: 'Your sale price per coin' },
       { id: 'quantity', label: 'Quantity sold', value: 0.1, min: 0, max: 1000000000, step: 'any', hint: 'Number of coins or units' },
       { id: 'fees', label: 'Total fees', value: 20, min: 0, max: 1000000000, step: 'any', hint: 'Combined fees in your selected currency' },
-      { id: 'taxRate', label: 'Assumed tax rate (%)', value: 0, min: 0, max: 100, step: 0.1, hint: 'Optional scenario only—not your tax rate' }
+      { id: 'taxRate', label: 'Assumed tax rate (%)', value: 0, min: 0, max: 100, step: 'any', hint: 'Optional scenario only—not your tax rate' }
     ],
     calculate: ({ buyPrice, sellPrice, quantity, fees, taxRate }) => {
       const proceeds = sellPrice * quantity;
@@ -77,9 +80,10 @@ const tools = {
     kicker: 'ONE-TIME INVESTMENT',
     symbol: '◈',
     description: 'Estimate growth on a single investment with annual compounding.',
+    assumption: 'Assumes one compounding period per year. No extra deposits, fees, tax or inflation are included.',
     fields: [
       { id: 'principal', label: 'Investment amount', value: 10000, min: 0.01, max: 1000000000, step: 'any', hint: 'One-time amount invested today' },
-      { id: 'rate', label: 'Expected annual return (%)', value: 7, min: -100, max: 100, step: 0.1, hint: 'An assumption, not a guarantee' },
+      { id: 'rate', label: 'Expected annual return (%)', value: 7, min: -100, max: 100, step: 'any', hint: 'An assumption, not a guarantee' },
       { id: 'years', label: 'Investment period (years)', value: 10, min: 1, max: 100, step: 1, hint: 'How long it stays invested' }
     ],
     calculate: ({ principal, rate, years }) => {
@@ -96,9 +100,10 @@ const tools = {
     kicker: 'PURCHASING POWER',
     symbol: '⌁',
     description: 'Compare a future price with what the same money may buy.',
+    assumption: 'Assumes the same inflation rate every year. The result is a scenario, not a price forecast.',
     fields: [
       { id: 'amount', label: 'Amount or price today', value: 1000, min: 0.01, max: 1000000000, step: 'any', hint: 'Enter an amount in your chosen currency' },
-      { id: 'inflation', label: 'Assumed annual inflation (%)', value: 3, min: 0, max: 100, step: 0.1, hint: 'Constant rate used for this estimate' },
+      { id: 'inflation', label: 'Assumed annual inflation (%)', value: 3, min: 0, max: 100, step: 'any', hint: 'Constant rate used for this estimate' },
       { id: 'years', label: 'Time period (years)', value: 10, min: 1, max: 100, step: 1, hint: 'How many years in the future' }
     ],
     calculate: ({ amount, inflation, years }) => {
@@ -132,6 +137,12 @@ if (!document.querySelector('#calculator-error')) {
 if (!form.querySelector('.live-update-note')) {
   form.insertAdjacentHTML('beforeend', '<p class="live-update-note">Results update as you change an input.</p>');
 }
+if (!document.querySelector('#calculation-assumptions')) {
+  form.insertAdjacentHTML('beforeend', '<p class="calculation-assumptions" id="calculation-assumptions"></p>');
+}
+if (!document.querySelector('#currency-note')) {
+  form.insertAdjacentHTML('beforeend', '<p class="currency-note" id="currency-note">Enter amounts in the selected currency. Changing the currency only changes the display; it does not convert amounts.</p>');
+}
 
 function money(value) {
   const locales = { USD: 'en-US', GBP: 'en-GB', AUD: 'en-AU', CAD: 'en-CA', EUR: 'en-IE' };
@@ -150,6 +161,7 @@ function renderTool(toolId) {
   document.querySelector('#tool-title').textContent = tool.title;
   document.querySelector('#tool-description').textContent = tool.description;
   document.querySelector('#tool-symbol').textContent = tool.symbol;
+  document.querySelector('#calculation-assumptions').textContent = tool.assumption;
   inputGrid.innerHTML = tool.fields.map(field => `
     <div class="field">
       <label for="${field.id}">${field.label}</label>
