@@ -91,20 +91,15 @@
             </div>
             <form id="calculator-form">
               <div class="input-grid" id="input-grid"></div>
-              <button class="calculate-button" type="submit">Calculate estimate <span aria-hidden="true">→</span></button>
+              <p class="calculator-error" id="calculator-error" role="alert" hidden></p>
+              <p class="live-update-note">Results update as you change an input.</p>
             </form>
             <div class="result-panel" id="result-panel" aria-live="polite">
               <div class="result-topline"><span>YOUR ESTIMATE</span><span class="estimate-badge">Illustrative</span></div>
               <p class="result-label" id="result-label">Estimated future value</p>
-              <p class="result-value" id="result-value">₹ 0</p>
+              <p class="result-value" id="result-value">$0</p>
               <div class="result-breakdown" id="result-breakdown"></div>
-              <div class="chart-wrap" id="chart-wrap">
-                <div class="chart-heading"><span id="chart-title">Growth over time</span><span id="chart-caption"></span></div>
-                <div class="chart-legend" id="chart-legend"></div>
-                <div class="chart" id="chart" role="img" aria-label="Investment projection chart"></div>
-              </div>
             </div>
-            <details class="schedule-details" id="schedule-details"><summary>See yearly numbers</summary><div class="schedule-wrap"><table class="schedule-table"><thead id="schedule-head"></thead><tbody id="schedule-body"></tbody></table></div></details>
             <p class="disclaimer">This calculator provides illustrative estimates only. Actual returns, fees, and taxes may differ. This is not financial, investment, or tax advice.</p>
             <aside class="ad-slot ad-in-content" aria-label="Advertisement"><span>Advertisement</span><small>In-content placement · after calculator results</small></aside>
           </section>
@@ -119,10 +114,10 @@
         </div>
         <div class="learn-grid">
           <article class="learn-card"><span class="learn-number">01</span><h3>Regular investing (SIP)</h3><p>A systematic investment plan (SIP) invests a fixed amount at regular intervals. This estimate adds each contribution at month-end and applies monthly compounding. Market-linked returns are not guaranteed.</p><span class="formula">FV = P × [((1 + r)<sup>n</sup> − 1) / r]</span><a class="learn-link" href="sip-calculator.html">Use the SIP calculator →</a></article>
-          <article class="learn-card"><span class="learn-number">02</span><h3>Compound interest</h3><p>Compound interest means earning returns on both your original principal and accumulated growth. This estimate assumes a constant annual rate compounded monthly.</p><span class="formula">A = P × (1 + r / 12)<sup>12t</sup></span><a class="learn-link" href="compound-interest-calculator.html">Explore compound interest →</a></article>
+          <article class="learn-card"><span class="learn-number">02</span><h3>Compound interest</h3><p>Compound interest means earning returns on both your original principal and accumulated growth. This estimate assumes a constant annual rate compounded once per year.</p><span class="formula">A = P × (1 + r)<sup>t</sup></span><a class="learn-link" href="compound-interest-calculator.html">Explore compound interest →</a></article>
           <article class="learn-card"><span class="learn-number">03</span><h3>Crypto profit &amp; tax</h3><p>Enter your buy price, sell price, quantity, fees, and an estimated tax rate. Tax rules differ by location and asset; confirm local rules with a qualified tax professional.</p><span class="formula">Estimated profit = sale proceeds − cost − fees</span><a class="learn-link" href="crypto-profit-calculator.html">Estimate a crypto trade →</a></article>
-          <article class="learn-card"><span class="learn-number">04</span><h3>Lump-sum growth</h3><p>A lump-sum investment puts in a single amount up front. The projection shows how monthly compounding at your chosen annual rate could affect its future value.</p><span class="formula">A = P × (1 + r / 12)<sup>12t</sup></span><a class="learn-link" href="lump-sum-calculator.html">Project a lump-sum investment →</a></article>
-          <article class="learn-card"><span class="learn-number">05</span><h3>Inflation &amp; purchasing power</h3><p>Inflation reduces what a fixed amount can buy over time. This calculator estimates the future purchasing power of today's money using the inflation rate you enter.</p><span class="formula">Future value in today's money = Amount / (1 + i)<sup>t</sup></span><a class="learn-link" href="inflation-calculator.html">Check inflation impact →</a></article>
+          <article class="learn-card"><span class="learn-number">04</span><h3>Lump-sum growth</h3><p>A lump-sum investment puts in a single amount up front. The estimate shows how annual compounding at your chosen rate may affect its future value.</p><span class="formula">A = P × (1 + r)<sup>t</sup></span><a class="learn-link" href="lump-sum-calculator.html">Project a lump-sum investment →</a></article>
+          <article class="learn-card"><span class="learn-number">05</span><h3>Inflation &amp; purchasing power</h3><p>Inflation reduces what a fixed amount can buy over time. Compare the estimated future cost of today's price with the buying power of an unchanged amount.</p><span class="formula">Future cost = Amount × (1 + i)<sup>t</sup></span><a class="learn-link" href="inflation-calculator.html">Check inflation impact →</a></article>
           <article class="learn-card learn-callout"><span class="callout-icon">✳</span><h3>Use estimates thoughtfully</h3><p>Change one assumption at a time to see how it affects your results. A calculator can help you explore scenarios, but it cannot predict markets or replace personalized advice.</p><a href="#calculators">Try a calculator <span aria-hidden="true">→</span></a></article>
         </div>
       </section>

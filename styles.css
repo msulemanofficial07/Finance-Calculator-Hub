@@ -31,7 +31,7 @@ h1 { margin-bottom: 17px; color: var(--navy); font: 800 clamp(38px, 5vw, 57px)/1
 h1 span { color: #20ad79; }
 .hero-text { max-width: 440px; margin-bottom: 25px; color: #738096; font-size: 14px; line-height: 1.8; }
 .primary-link { display: inline-flex; align-items: center; gap: 20px; padding: 13px 17px; color: #092919; background: var(--green); border-radius: 7px; font-size: 12px; font-weight: 700; transition: transform .2s, background .2s; }
-.primary-link:hover, .calculate-button:hover { transform: translateY(-2px); background: #36d39b; }
+.primary-link:hover { transform: translateY(-2px); background: #36d39b; }
 .hero-art { width: 360px; height: 275px; position: relative; margin-right: 4%; display: grid; place-items: center; }
 .orbit { position: absolute; border: 1px solid #dae9e2; border-radius: 50%; transform: rotate(-22deg); }
 .orbit-one { width: 370px; height: 170px; }
@@ -77,43 +77,21 @@ h1 span { color: #20ad79; }
 .field label { color: #5f6b7d; font-size: 10px; font-weight: 600; }
 .field input { width: 100%; height: 40px; padding: 0 11px; outline: none; color: var(--ink); border: 1px solid #e6eaee; border-radius: 6px; background: white; font-size: 12px; }
 .field input:focus, .currency-picker select:focus { border-color: #49c999; box-shadow: 0 0 0 3px #49c99920; }
+.field input:invalid { border-color: #d77770; }
 .field-hint { color: #9ba5b1; font-size: 9px; }
-.calculate-button { width: 100%; display: flex; align-items: center; justify-content: center; gap: 14px; height: 42px; border: 0; border-radius: 6px; color: #073522; background: var(--green); font-size: 11px; font-weight: 700; cursor: pointer; transition: .2s; }
+.live-update-note { margin: -3px 0 0; color: #748477; font-size: 11px; }
+.calculator-error { margin: 10px 0 0; color: #b42318; font-size: 12px; }
 .result-panel { margin-top: 22px; padding: 19px; border-radius: 8px; background: #f5fbf8; }
-.result-topline, .chart-heading { display: flex; align-items: center; justify-content: space-between; }
+.result-panel[hidden] { display: none; }
+.result-topline { display: flex; align-items: center; justify-content: space-between; }
 .result-topline { color: #87958e; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
 .estimate-badge { padding: 5px 8px; color: #15845a; background: #e1f6ec; border-radius: 12px; font-size: 8px; letter-spacing: 0; }
-.result-label { margin: 14px 0 3px; color: #78868a; font-size: 10px; }
-.result-value { margin-bottom: 15px; color: #0f3123; font: 800 28px system-ui, sans-serif; letter-spacing: -.8px; overflow-wrap: anywhere; }
+.result-label { margin: 14px 0 3px; color: #53665b; font-size: 13px; }
+.result-value { margin-bottom: 17px; color: #0f3123; font: 800 34px system-ui, sans-serif; letter-spacing: -.8px; overflow-wrap: anywhere; }
 .result-breakdown { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .breakdown-item { padding: 10px 11px; background: white; border: 1px solid #e8f0ec; border-radius: 6px; }
-.breakdown-item span { display: block; margin-bottom: 5px; color: #8b9696; font-size: 9px; }
-.breakdown-item strong { color: #34463e; font-size: 12px; font-weight: 700; }
-.chart-wrap { margin-top: 19px; padding-top: 15px; border-top: 1px solid #e7efea; }
-.chart-heading { color: #607166; font-size: 9px; font-weight: 700; }
-.chart-heading span:last-child { color: #98a59e; font-weight: 400; }
-.chart-legend { display: flex; flex-wrap: wrap; gap: 15px; margin: 13px 0 0; color: #66766d; font-size: 10px; }
-.chart-legend > span { display: inline-flex; align-items: center; gap: 6px; }
-.legend-dot { width: 9px; height: 9px; display: inline-block; border-radius: 50%; }
-.legend-dot-1 { background: #18a875; }
-.legend-dot-2 { background: #95a4b2; }
-.chart { width: 100%; margin-top: 5px; }
-.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
-.chart-grid-line { stroke: #e6eee9; stroke-width: 1; }
-.chart-axis-label { fill: #7c8982; font: 11px system-ui, sans-serif; }
-.chart-line-primary, .chart-line-secondary { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; }
-.chart-line-primary { stroke: #18a875; }
-.chart-line-secondary { stroke: #95a4b2; stroke-dasharray: 6 5; stroke-width: 2; }
-.chart-line-primary-point { fill: white; stroke: #18a875; stroke-width: 2; }
-.chart-line-secondary-point { fill: white; stroke: #95a4b2; stroke-width: 2; }
-.schedule-details { margin-top: 14px; border: 1px solid #e8efeb; border-radius: 7px; }
-.schedule-details summary { padding: 11px 13px; color: #347657; font-size: 12px; font-weight: 700; cursor: pointer; }
-.schedule-details[open] summary { border-bottom: 1px solid #e8efeb; }
-.schedule-wrap { overflow-x: auto; }
-.schedule-table { width: 100%; border-collapse: collapse; color: #728077; font-size: 9px; text-align: right; }
-.schedule-table th, .schedule-table td { padding: 8px 7px; border-bottom: 1px solid #e9f0ec; white-space: nowrap; }
-.schedule-table th:first-child, .schedule-table td:first-child { text-align: left; }
-.schedule-table th { color: #89968f; font-weight: 600; }
+.breakdown-item span { display: block; margin-bottom: 5px; color: #66766d; font-size: 11px; }
+.breakdown-item strong { color: #203c2f; font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
 .trade-breakdown { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .disclaimer { margin: 12px 0 0; color: #7a8791; font-size: 10px; line-height: 1.6; }
 .learn-section { padding: 68px max(8vw, 24px) 80px; background: #f8fafb; }
@@ -261,13 +239,10 @@ h1 span { color: #20ad79; }
   .result-topline { font-size: 10px; }
   .result-label { font-size: 12px; }
   .result-value { font-size: 26px; }
-  .breakdown-item span { font-size: 11px; }
-  .breakdown-item strong { font-size: 13px; }
-  .chart-heading { font-size: 11px; }
-  .chart-legend { font-size: 11px; }
-  .chart-axis-label { font-size: 12px; }
-  .schedule-details summary { font-size: 13px; }
-  .schedule-table { font-size: 11px; }
+  .result-value { font-size: 30px; }
+  .breakdown-item span { font-size: 12px; }
+  .breakdown-item strong { font-size: 14px; }
+  .live-update-note, .calculator-error { font-size: 12px; }
   .disclaimer { font-size: 11px; line-height: 1.65; }
   .learn-card p, .guide-article p, .guide-article li { font-size: 14px; line-height: 1.75; }
   .learn-card h3, .related-tools h2 { font-size: 15px; }
