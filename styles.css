@@ -128,9 +128,16 @@ h1 span { color: #20ad79; }
 .result-table th, .result-table td { padding: 11px 13px; border-bottom: 1px solid #edf2ef; text-align: left; }
 .result-table thead th { color: white; background: #176f4c; font-size: 11px; font-weight: 800; letter-spacing: .35px; text-transform: uppercase; }
 .result-table tbody th { color: #354d40; font-weight: 600; }
+.result-table tbody tr:nth-child(even) { background: #f5f8f6; }
 .result-table td { color: #183d2d; font-weight: 750; text-align: right; white-space: nowrap; }
-.result-table tbody tr:last-child th, .result-table tbody tr:last-child td { border-bottom: 0; }
-.result-table tbody tr:last-child { background: #f8fcf9; }
+.result-table tfoot th, .result-table tfoot td { color: #124a32; background: #e4f3e9; border-top: 2px solid #b6d9c2; border-bottom: 0; font-weight: 800; }
+.result-table-section { margin-top: 18px; }
+.result-table-section h5 { margin: 0 0 9px; color: #244735; font-size: 13px; font-weight: 800; }
+.result-inputs-details { margin-top: 12px; overflow: hidden; border: 1px solid #cddbd2; border-radius: 8px; background: white; }
+.result-inputs-details summary { padding: 11px 13px; color: #244735; background: #f5f9f6; font-size: 12px; font-weight: 750; cursor: pointer; }
+.result-inputs-details[open] summary { border-bottom: 1px solid #e0e9e3; }
+.result-inputs-details .result-table-wrap { border: 0; border-radius: 0; }
+.result-inputs-details .result-table thead th { background: #526b5c; }
 .disclaimer { margin: 12px 0 0; color: #526174; font-size: 12px; line-height: 1.65; }
 .learn-section { padding: 68px max(8vw, 24px) 80px; background: #f8fafb; }
 .learn-heading { max-width: 1110px; margin: 0 auto 28px; }
@@ -156,10 +163,14 @@ h1 span { color: #20ad79; }
 .ad-slot > small { color: #a3ada8; font-size: 9px; }
 .ad-banner { max-width: 970px; min-height: 100px; margin: 24px auto 0; }
 .ad-in-content { min-height: 90px; margin-top: 18px; }
-.save-estimate-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-.save-estimate-button, .clear-saved-button { min-height: 40px; padding: 9px 13px; border: 1px solid #16865d; border-radius: 7px; color: #0f6044; background: white; font-size: 12px; font-weight: 700; cursor: pointer; }
-.save-estimate-button:hover, .clear-saved-button:hover { background: #edf8f3; }
-.save-status { color: #15845a; font-size: 12px; }
+.save-estimate-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #d5e5da; }
+.save-estimate-button, .download-image-button, .share-result-button, .clear-saved-button { min-height: 42px; padding: 9px 14px; border: 1px solid #14774e; border-radius: 7px; color: #14583d; background: white; font-size: 12px; font-weight: 750; cursor: pointer; transition: background .16s, color .16s, transform .16s; }
+.download-image-button { color: white; background: #116b48; box-shadow: 0 3px 8px #116b4824; }
+.save-estimate-button:hover, .share-result-button:hover, .clear-saved-button:hover { background: #e7f4eb; }
+.download-image-button:hover { transform: translateY(-1px); color: white; background: #0c593b; }
+.save-status { flex: 1 1 100%; color: #14583d; font-size: 12px; line-height: 1.5; }
+.save-status.is-error { color: #84221d; }
+.share-copy-text { width: 100%; min-height: 110px; padding: 10px; color: #26384b; border: 1px solid #b9c9bf; border-radius: 7px; background: white; font-size: 12px; line-height: 1.5; }
 .saved-estimates-section { max-width: 1110px; margin: 0 auto; padding: 35px max(8vw, 24px) 70px; }
 .saved-estimates-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
 .saved-estimates-heading h2 { margin: 0 0 7px; color: var(--navy); font: 700 28px/1.25 system-ui, sans-serif; }
@@ -256,6 +267,8 @@ h1 span { color: #20ad79; }
   .calculate-button { width: 100%; }
   .result-panel { padding: 14px; }
   .result-value { font-size: 24px; }
+  .save-estimate-controls > button { width: 100%; }
+  .save-status { font-size: 12px; }
   .learn-section { padding: 53px 17px; }
   .resources-section { padding: 0 17px 53px; }
   .learn-grid { grid-template-columns: 1fr; gap: 10px; }
@@ -312,6 +325,7 @@ h1 span { color: #20ad79; }
   .result-value { font-size: 32px; }
   .result-explanation { font-size: 13px; }
   .result-table th, .result-table td { padding: 10px; font-size: 12px; }
+  .result-inputs-details summary { font-size: 13px; }
   .disclaimer { font-size: 13px; line-height: 1.7; }
   .learn-card p, .guide-article p, .guide-article li { font-size: 15px; line-height: 1.8; }
   .learn-card h3, .related-tools h2 { font-size: 17px; }

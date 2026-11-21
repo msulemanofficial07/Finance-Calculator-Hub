@@ -207,6 +207,29 @@ function resultExplanation(inputs, result) {
   }
 }
 
+function getResultInputRows(inputs) {
+  return tools[activeTool].fields.flatMap(field => {
+    const value = inputs[field.id];
+    if (field.dependsOn && inputs[field.dependsOn] !== field.dependsValue) return [];
+    if (value === undefined || value === null || value === '') return [];
+
+    let formattedValue;
+    if (field.type === 'select') {
+      formattedValue = field.options.find(option => option.value === value)?.label || value;
+    } else if (field.id === 'years') {
+      formattedValue = `${value} ${Number(value) === 1 ? 'year' : 'years'}`;
+    } else if (['rate', 'inflation', 'taxRate'].includes(field.id)) {
+      formattedValue = `${value}%`;
+    } else if (field.id === 'quantity') {
+      formattedValue = new Intl.NumberFormat(undefined, { maximumFractionDigits: 8 }).format(value);
+    } else {
+      formattedValue = money(value);
+    }
+
+    return [{ label: field.label, value: formattedValue }];
+  });
+}
+
 function renderResult(result, inputs) {
   document.querySelector('#result-label').textContent = result.label;
   document.querySelector('#result-value').textContent = money(result.value);
@@ -228,15 +251,32 @@ function renderResult(result, inputs) {
     breakdown.before(explanation);
   }
   explanation.textContent = resultExplanation(inputs, result);
+  const breakdownRows = result.breakdown.map(([label, amount]) => `
+    <tr><th scope="row">${label}</th><td>${money(amount)}</td></tr>
+  `).join('');
+  const inputRows = getResultInputRows(inputs).map(({ label, value }) => `
+    <tr><th scope="row">${label}</th><td>${value}</td></tr>
+  `).join('');
   breakdown.innerHTML = `
-    <div class="result-table-wrap">
-      <table class="result-table">
-        <thead><tr><th scope="col">Breakdown</th><th scope="col">Amount</th></tr></thead>
-        <tbody>${result.breakdown.map(([label, amount]) => `
-          <tr><th scope="row">${label}</th><td>${money(amount)}</td></tr>
-        `).join('')}</tbody>
-      </table>
-    </div>
+    <section class="result-table-section" aria-labelledby="breakdown-title">
+      <h5 id="breakdown-title">Calculation breakdown</h5>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead><tr><th scope="col">Item</th><th scope="col">Amount</th></tr></thead>
+          <tbody>${breakdownRows}</tbody>
+          <tfoot><tr><th scope="row">${result.label}</th><td>${money(result.value)}</td></tr></tfoot>
+        </table>
+      </div>
+    </section>
+    <details class="result-inputs-details">
+      <summary>View inputs used</summary>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead><tr><th scope="col">Input</th><th scope="col">Value</th></tr></thead>
+          <tbody>${inputRows}</tbody>
+        </table>
+      </div>
+    </details>
   `;
 }
 
@@ -458,6 +498,290 @@ function showSaveMessage(message) {
   if (!status) return;
   status.textContent = message;
   status.hidden = false;
+  status.classList.remove('is-error');
+}
+
+function showActionError(message) {
+  showSaveMessage(message);
+  document.querySelector('#save-status')?.classList.add('is-error');
+}
+
+function getShareSummary() {
+  const lines = [
+    `${tools[activeTool].title} — illustrative estimate`,
+    `${lastResult.label}: ${money(lastResult.value)}`,
+    resultExplanation(lastInputs, lastResult),
+    '',
+    'Calculation breakdown:',
+    ...lastResult.breakdown.map(([label, amount]) => `${label}: ${money(amount)}`),
+    '',
+    'Inputs used:',
+    ...getResultInputRows(lastInputs).map(({ label, value }) => `${label}: ${value}`),
+    '',
+    'For learning only; not financial, investment, or tax advice.'
+  ];
+  if (['http:', 'https:'].includes(window.location.protocol)) {
+    const calculatorUrl = new URL(window.location.href);
+    calculatorUrl.search = '';
+    calculatorUrl.hash = '';
+    lines.push('', `Calculator: ${calculatorUrl.href}`);
+  }
+  return lines.join('\n');
+}
+
+function showShareFallback(text) {
+  const field = document.querySelector('#share-copy-text');
+  field.value = text;
+  field.hidden = false;
+  field.focus();
+  field.select();
+}
+
+async function shareEstimate() {
+  if (!lastResult || !lastInputs) {
+    showActionError('Calculate an estimate before sharing it.');
+    return;
+  }
+
+  const text = getShareSummary();
+  const copyField = document.querySelector('#share-copy-text');
+  copyField.hidden = true;
+
+  if (typeof navigator.share === 'function') {
+    try {
+      const shareData = { title: `${tools[activeTool].title} estimate`, text };
+      if (['http:', 'https:'].includes(window.location.protocol)) {
+        const calculatorUrl = new URL(window.location.href);
+        calculatorUrl.search = '';
+        calculatorUrl.hash = '';
+        shareData.url = calculatorUrl.href;
+      }
+      await navigator.share(shareData);
+      showSaveMessage('Share options opened.');
+      return;
+    } catch (error) {
+      if (error.name === 'AbortError') return;
+    }
+  }
+
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard access is unavailable.');
+    await navigator.clipboard.writeText(text);
+    showSaveMessage('Estimate summary copied. Paste it into a message to share.');
+  } catch (error) {
+    showShareFallback(text);
+    showActionError('Could not copy automatically. The summary is selected so you can copy it manually.');
+  }
+}
+
+function wrapCanvasText(context, text, maxWidth) {
+  const lines = [];
+  let line = '';
+
+  for (const word of String(text).split(/\s+/)) {
+    if (context.measureText(word).width > maxWidth) {
+      if (line) lines.push(line);
+      line = '';
+      for (const character of word) {
+        if (line && context.measureText(line + character).width > maxWidth) {
+          lines.push(line);
+          line = character;
+        } else {
+          line += character;
+        }
+      }
+      continue;
+    }
+
+    const candidate = line ? `${line} ${word}` : word;
+    if (line && context.measureText(candidate).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = candidate;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function downloadResultImage() {
+  if (!lastResult || !lastInputs) {
+    showActionError('Calculate an estimate before downloading an image.');
+    return;
+  }
+
+  const width = 1100;
+  const scale = 2;
+  const canvas = document.createElement('canvas');
+  canvas.width = width * scale;
+  canvas.height = 1800 * scale;
+  const context = canvas.getContext('2d');
+  if (!context) {
+    showActionError('This browser could not create the result image.');
+    return;
+  }
+  if (typeof canvas.toBlob !== 'function') {
+    showActionError('PNG image downloads are not supported by this browser.');
+    return;
+  }
+  context.scale(scale, scale);
+
+  const padding = 64;
+  const innerWidth = width - padding * 2;
+  const leftColumn = 690;
+  const rightColumn = innerWidth - leftColumn;
+  let y = 60;
+
+  context.fillStyle = '#f0f6f2';
+  context.fillRect(0, 0, width, canvas.height / scale);
+  context.fillStyle = '#ffffff';
+  context.fillRect(30, 30, width - 60, canvas.height / scale - 60);
+  context.fillStyle = '#176f4c';
+  context.fillRect(30, 30, width - 60, 12);
+
+  context.fillStyle = '#176f4c';
+  context.fillRect(padding, y, 44, 44);
+  context.fillStyle = '#ffffff';
+  context.font = '800 26px system-ui, sans-serif';
+  context.textAlign = 'center';
+  context.fillText('F', padding + 22, y + 31);
+  context.textAlign = 'left';
+  context.fillStyle = '#163d2d';
+  context.font = '800 23px system-ui, sans-serif';
+  context.fillText('FinanceHub', padding + 58, y + 21);
+  context.fillStyle = '#596b60';
+  context.font = '16px system-ui, sans-serif';
+  context.fillText(tools[activeTool].title, padding + 58, y + 43);
+  context.textAlign = 'right';
+  context.fillStyle = '#176f4c';
+  context.font = '700 13px system-ui, sans-serif';
+  context.fillText('ILLUSTRATIVE ESTIMATE', width - padding, y + 27);
+  context.textAlign = 'left';
+  y += 86;
+
+  context.fillStyle = '#405b4c';
+  context.font = '700 15px system-ui, sans-serif';
+  context.fillText(lastResult.label.toUpperCase(), padding, y);
+  y += 60;
+  context.fillStyle = '#0c4a31';
+  let valueFont = 52;
+  const resultValue = money(lastResult.value);
+  context.font = `800 ${valueFont}px system-ui, sans-serif`;
+  while (context.measureText(resultValue).width > innerWidth && valueFont > 28) {
+    valueFont -= 2;
+    context.font = `800 ${valueFont}px system-ui, sans-serif`;
+  }
+  context.fillText(resultValue, padding, y);
+  y += 40;
+
+  context.fillStyle = '#344b40';
+  context.font = '19px system-ui, sans-serif';
+  const summaryLines = wrapCanvasText(context, resultExplanation(lastInputs, lastResult), innerWidth);
+  summaryLines.forEach(line => {
+    y += 30;
+    context.fillText(line, padding, y);
+  });
+  y += 34;
+
+  function drawTable(title, headers, rows, includeTotal) {
+    context.fillStyle = '#173c2c';
+    context.font = '800 21px system-ui, sans-serif';
+    context.fillText(title, padding, y);
+    y += 20;
+
+    context.fillStyle = '#176f4c';
+    context.fillRect(padding, y, innerWidth, 48);
+    context.fillStyle = '#ffffff';
+    context.font = '700 14px system-ui, sans-serif';
+    context.textAlign = 'left';
+    context.fillText(headers[0].toUpperCase(), padding + 16, y + 30);
+    context.textAlign = 'right';
+    context.fillText(headers[1].toUpperCase(), width - padding - 16, y + 30);
+    context.textAlign = 'left';
+    y += 48;
+
+    rows.forEach((row, index) => {
+      context.font = '16px system-ui, sans-serif';
+      const labelLines = wrapCanvasText(context, row.label, leftColumn - 28);
+      const valueLines = wrapCanvasText(context, row.value, rightColumn - 28);
+      const lineCount = Math.max(labelLines.length, valueLines.length, 1);
+      const rowHeight = lineCount * 25 + 20;
+      context.fillStyle = index % 2 ? '#f5f8f6' : '#ffffff';
+      context.fillRect(padding, y, innerWidth, rowHeight);
+      context.strokeStyle = '#e2eae5';
+      context.beginPath();
+      context.moveTo(padding, y + rowHeight);
+      context.lineTo(width - padding, y + rowHeight);
+      context.stroke();
+      context.fillStyle = '#344b40';
+      context.textAlign = 'left';
+      labelLines.forEach((line, lineIndex) => context.fillText(line, padding + 16, y + 21 + lineIndex * 25));
+      context.fillStyle = '#183d2d';
+      context.textAlign = 'right';
+      valueLines.forEach((line, lineIndex) => context.fillText(line, width - padding - 16, y + 21 + lineIndex * 25));
+      context.textAlign = 'left';
+      y += rowHeight;
+    });
+
+    if (includeTotal) {
+      const total = { label: lastResult.label, value: money(lastResult.value) };
+      context.font = '800 17px system-ui, sans-serif';
+      const labelLines = wrapCanvasText(context, total.label, leftColumn - 28);
+      const valueLines = wrapCanvasText(context, total.value, rightColumn - 28);
+      const rowHeight = Math.max(labelLines.length, valueLines.length, 1) * 26 + 22;
+      context.fillStyle = '#e4f3e9';
+      context.fillRect(padding, y, innerWidth, rowHeight);
+      context.fillStyle = '#124a32';
+      labelLines.forEach((line, index) => context.fillText(line, padding + 16, y + 22 + index * 26));
+      context.textAlign = 'right';
+      valueLines.forEach((line, index) => context.fillText(line, width - padding - 16, y + 22 + index * 26));
+      context.textAlign = 'left';
+      y += rowHeight + 30;
+    } else {
+      y += 30;
+    }
+  }
+
+  drawTable(
+    'Calculation breakdown',
+    ['Item', 'Amount'],
+    lastResult.breakdown.map(([label, amount]) => ({ label, value: money(amount) })),
+    true
+  );
+  drawTable('Inputs used', ['Input', 'Value'], getResultInputRows(lastInputs), false);
+
+  context.fillStyle = '#526174';
+  context.font = '14px system-ui, sans-serif';
+  const disclaimerLines = wrapCanvasText(
+    context,
+    'For learning only; actual returns, fees, inflation and taxes may differ. This is not financial, investment, or tax advice.',
+    innerWidth
+  );
+  disclaimerLines.forEach(line => {
+    y += 22;
+    context.fillText(line, padding, y);
+  });
+
+  const imageHeight = Math.ceil((y + 60) * scale);
+  const imageData = context.getImageData(0, 0, canvas.width, imageHeight);
+  canvas.height = imageHeight;
+  context.putImageData(imageData, 0, 0);
+  canvas.toBlob(blob => {
+    if (!blob) {
+      showActionError('The result image could not be created.');
+      return;
+    }
+    const imageUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = `financehub-${activeTool}-estimate.png`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(imageUrl), 1000);
+    showSaveMessage('Result image downloaded.');
+  }, 'image/png');
 }
 
 function ensureSaveControls() {
@@ -468,10 +792,17 @@ function ensureSaveControls() {
   controls.className = 'save-estimate-controls';
   controls.innerHTML = `
     <button class="save-estimate-button" id="save-estimate" type="button">Save estimate</button>
+    <button class="download-image-button" id="download-result-image" type="button">Download image</button>
+    <button class="share-result-button" id="share-result" type="button">Share result</button>
     <span class="save-status" id="save-status" role="status" hidden></span>
+    <textarea class="share-copy-text" id="share-copy-text" aria-label="Shareable estimate summary" readonly hidden></textarea>
   `;
-  resultPanel.appendChild(controls);
+  const chart = resultPanel.querySelector('.chart-wrap');
+  if (chart) resultPanel.insertBefore(controls, chart);
+  else resultPanel.appendChild(controls);
   controls.querySelector('#save-estimate').addEventListener('click', saveEstimate);
+  controls.querySelector('#download-result-image').addEventListener('click', downloadResultImage);
+  controls.querySelector('#share-result').addEventListener('click', shareEstimate);
 }
 
 ensureSaveControls();
