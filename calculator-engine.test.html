@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Calculator Engine Tests</title>
+  </head>
+  <body>
+    <h1>Calculator Engine Tests</h1>
+    <pre id="test-output" aria-live="polite"></pre>
+    <script src="calculator-engine.js"></script>
+    <script>
+      const engine = window.FinanceCalculatorEngine;
+      const close = (actual, expected, tolerance = 0.000001) =>
+        Math.abs(actual - expected) <= tolerance;
+      const tests = [
+        ['SIP zero rate', close(engine.sip({ monthly: 500, rate: 0, years: 10, inflation: 0 }).value, 60000)],
+        ['SIP 12 percent', close(engine.sip({ monthly: 5000, rate: 12, years: 10, inflation: 0 }).value, 1150193.447287)],
+        ['Compound interest', close(engine.compound({ principal: 10000, rate: 6, years: 10 }).value, 17908.476965)],
+        ['Compound loss', close(engine.compound({ principal: 10000, rate: -100, years: 10 }).value, 0)],
+        ['Crypto profit', close(engine.crypto({ buyPrice: 50000, sellPrice: 60000, quantity: 0.1, fees: 20, taxRate: 20 }).value, 784)],
+        ['Crypto loss tax', close(engine.crypto({ buyPrice: 60000, sellPrice: 50000, quantity: 0.1, fees: 20, taxRate: 20 }).value, -1020)],
+        ['Lump sum', close(engine.lumpSum({ principal: 10000, rate: 7, years: 10 }).value, 19671.513573)],
+        ['Inflation future cost', close(engine.inflation({ amount: 1000, inflation: 3, years: 10 }).value, 1343.916379)],
+        ['Inflation purchasing power', close(engine.inflation({ amount: 1000, inflation: 3, years: 10 }).breakdown[1][1], 744.093915)]
+      ];
+
+      const failures = tests.filter(([, passed]) => !passed);
+      document.querySelector('#test-output').textContent =
+        failures.length ? failures.map(([name]) => `FAIL: ${name}`).join('\n') : 'PASS: 9 calculator engine tests';
+      document.title = failures.length ? 'Calculator Engine Tests: FAILED' : 'Calculator Engine Tests: PASSED';
+    </script>
+  </body>
+</html>

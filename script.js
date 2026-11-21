@@ -11,24 +11,7 @@ const tools = {
       { id: 'years', label: 'Investment period (years)', value: 10, min: 1, max: 80, step: 1, hint: 'How many years you invest' },
       { id: 'inflation', label: 'Assumed inflation (%)', value: 0, min: 0, max: 100, step: 'any', hint: 'Optional; 0 disables inflation adjustment' }
     ],
-    calculate: ({ monthly, rate, years, inflation = 0 }) => {
-      const monthlyRate = rate / 1200;
-      const months = years * 12;
-      const futureValue = monthlyRate === 0
-        ? monthly * months
-        : monthly * Math.expm1(months * Math.log1p(monthlyRate)) / monthlyRate;
-      const invested = monthly * months;
-      const inflationAdjusted = futureValue / ((1 + inflation / 100) ** years);
-      return {
-        label: 'Estimated future value',
-        value: futureValue,
-        breakdown: [
-          ['Total contributions', invested],
-          ['Estimated growth', futureValue - invested],
-          ['Inflation-adjusted value', inflationAdjusted]
-        ]
-      };
-    }
+    calculate: inputs => window.FinanceCalculatorEngine.sip(inputs)
   },
   compound: {
     title: 'Compound interest calculator',
@@ -38,17 +21,10 @@ const tools = {
     assumption: 'Assumes one compounding period per year. No extra deposits, fees, tax or inflation are included.',
     fields: [
       { id: 'principal', label: 'Initial amount', value: 10000, min: 0.01, max: 1000000000, step: 'any', hint: 'Your starting balance' },
-      { id: 'rate', label: 'Annual interest rate (%)', value: 6, min: 0, max: 100, step: 'any', hint: 'Assumed rate, compounded yearly' },
+      { id: 'rate', label: 'Annual interest rate (%)', value: 6, min: -100, max: 100, step: 'any', hint: 'Assumed rate, compounded yearly' },
       { id: 'years', label: 'Time period (years)', value: 10, min: 1, max: 100, step: 1, hint: 'How many years it compounds' }
     ],
-    calculate: ({ principal, rate, years }) => {
-      const futureValue = principal * (1 + rate / 100) ** years;
-      return {
-        label: 'Estimated future value',
-        value: futureValue,
-        breakdown: [['Initial amount', principal], ['Estimated interest', futureValue - principal]]
-      };
-    }
+    calculate: inputs => window.FinanceCalculatorEngine.compound(inputs)
   },
   crypto: {
     title: 'Crypto profit & tax estimator',
@@ -63,23 +39,7 @@ const tools = {
       { id: 'fees', label: 'Total fees', value: 20, min: 0, max: 1000000000, step: 'any', hint: 'Combined fees in your selected currency' },
       { id: 'taxRate', label: 'Assumed tax rate (%)', value: 0, min: 0, max: 100, step: 'any', hint: 'Optional scenario only—not your tax rate' }
     ],
-    calculate: ({ buyPrice, sellPrice, quantity, fees, taxRate }) => {
-      const proceeds = sellPrice * quantity;
-      const cost = buyPrice * quantity;
-      const profitBeforeTax = proceeds - cost - fees;
-      const estimatedTax = Math.max(0, profitBeforeTax) * taxRate / 100;
-      return {
-        label: 'Estimated net profit / loss',
-        value: profitBeforeTax - estimatedTax,
-        breakdown: [
-          ['Sale proceeds', proceeds],
-          ['Purchase cost', cost],
-          ['Trading fees', fees],
-          ['Profit / loss before tax', profitBeforeTax],
-          ['Illustrative tax', estimatedTax]
-        ]
-      };
-    }
+    calculate: inputs => window.FinanceCalculatorEngine.crypto(inputs)
   },
   lumpsum: {
     title: 'Lump-sum investment calculator',
@@ -92,14 +52,7 @@ const tools = {
       { id: 'rate', label: 'Expected annual return (%)', value: 7, min: -100, max: 100, step: 'any', hint: 'An assumption, not a guarantee' },
       { id: 'years', label: 'Investment period (years)', value: 10, min: 1, max: 100, step: 1, hint: 'How long it stays invested' }
     ],
-    calculate: ({ principal, rate, years }) => {
-      const futureValue = principal * (1 + rate / 100) ** years;
-      return {
-        label: 'Estimated future value',
-        value: futureValue,
-        breakdown: [['Amount invested', principal], ['Estimated growth', futureValue - principal]]
-      };
-    }
+    calculate: inputs => window.FinanceCalculatorEngine.lumpSum(inputs)
   },
   inflation: {
     title: 'Inflation calculator',
@@ -112,19 +65,7 @@ const tools = {
       { id: 'inflation', label: 'Assumed annual inflation (%)', value: 3, min: 0, max: 100, step: 'any', hint: 'Constant rate used for this estimate' },
       { id: 'years', label: 'Time period (years)', value: 10, min: 1, max: 100, step: 1, hint: 'How many years in the future' }
     ],
-    calculate: ({ amount, inflation, years }) => {
-      const factor = (1 + inflation / 100) ** years;
-      const futureCost = amount * factor;
-      const purchasingPower = amount / factor;
-      return {
-        label: 'Estimated future cost',
-        value: futureCost,
-        breakdown: [
-          ['Price increase', futureCost - amount],
-          ["Today's money buying power", purchasingPower]
-        ]
-      };
-    }
+    calculate: inputs => window.FinanceCalculatorEngine.inflation(inputs)
   }
 };
 
@@ -210,7 +151,6 @@ function renderResult(result) {
 function renderSipProjection(monthly, rate, years, inflation) {
   if (activeTool !== 'sip') return;
 
-  const monthlyRate = rate / 1200;
   const chart = document.querySelector('#chart');
   const chartCaption = document.querySelector('#chart-caption');
   const chartLegend = document.querySelector('#chart-legend');
@@ -224,11 +164,9 @@ function renderSipProjection(monthly, rate, years, inflation) {
   const rowInterval = years > 30 ? 5 : years > 15 ? 2 : 1;
 
   for (let year = 1; year <= years; year++) {
-    const months = year * 12;
-    const futureValue = monthlyRate === 0
-      ? monthly * months
-      : monthly * Math.expm1(months * Math.log1p(monthlyRate)) / monthlyRate;
-    const invested = monthly * months;
+    const yearlyResult = window.FinanceCalculatorEngine.sip({ monthly, rate, years: year, inflation });
+    const futureValue = yearlyResult.value;
+    const invested = yearlyResult.breakdown[0][1];
     points.push({ year, invested, futureValue });
 
     if (year === 1 || year === years || year % rowInterval === 0) {
@@ -281,7 +219,17 @@ function updateCalculator() {
   document.querySelector('#result-panel').hidden = false;
   const values = Object.fromEntries(new FormData(form).entries());
   const inputs = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Number(value)]));
-  renderResult(tools[activeTool].calculate(inputs));
+  try {
+    const result = tools[activeTool].calculate(inputs);
+    const hasInvalidResult = ![result.value, ...result.breakdown.map(([, amount]) => amount)].every(Number.isFinite);
+    if (hasInvalidResult) throw new Error('The calculation is outside the supported range.');
+    renderResult(result);
+  } catch (calculationError) {
+    error.hidden = false;
+    error.textContent = calculationError.message || 'Enter valid values to calculate.';
+    document.querySelector('#result-panel').hidden = true;
+    return;
+  }
   if (activeTool === 'sip') {
     renderSipProjection(inputs.monthly, inputs.rate, inputs.years, inputs.inflation || 0);
   }
@@ -343,7 +291,15 @@ function saveEstimate() {
 
   const values = Object.fromEntries(new FormData(form).entries());
   const inputs = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Number(value)]));
-  const result = tools[activeTool].calculate(inputs);
+  let result;
+  try {
+    result = tools[activeTool].calculate(inputs);
+    const hasInvalidResult = ![result.value, ...result.breakdown.map(([, amount]) => amount)].every(Number.isFinite);
+    if (hasInvalidResult) throw new Error('The calculation is outside the supported range.');
+  } catch (calculationError) {
+    showSaveMessage(calculationError.message || 'Enter valid values before saving.');
+    return;
+  }
 
   const estimates = getSavedEstimates();
   estimates.unshift({
