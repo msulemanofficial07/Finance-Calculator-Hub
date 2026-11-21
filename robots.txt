@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://msulemanofficial07.github.io/Finance-Calculator-Hub/sitemap.xml

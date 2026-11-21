@@ -128,6 +128,11 @@ const inputGrid = document.querySelector('#input-grid');
 const buttons = [...document.querySelectorAll('[data-tool]')];
 let activeTool = document.body.dataset.calculator || 'sip';
 
+const savedCurrency = localStorage.getItem('financehub-currency');
+if (savedCurrency && [...currencySelect.options].some(option => option.value === savedCurrency)) {
+  currencySelect.value = savedCurrency;
+}
+
 form.querySelector('.calculate-button')?.remove();
 document.querySelector('.chart-wrap')?.remove();
 document.querySelector('.schedule-details')?.remove();
@@ -211,6 +216,9 @@ form.addEventListener('submit', event => {
   event.preventDefault();
   updateCalculator();
 });
-currencySelect.addEventListener('change', updateCalculator);
+currencySelect.addEventListener('change', () => {
+  localStorage.setItem('financehub-currency', currencySelect.value);
+  updateCalculator();
+});
 
 renderTool(activeTool);
