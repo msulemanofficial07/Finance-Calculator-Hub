@@ -74,6 +74,8 @@ const form = document.querySelector('#calculator-form');
 const inputGrid = document.querySelector('#input-grid');
 const buttons = [...document.querySelectorAll('[data-tool]')];
 let activeTool = document.body.dataset.calculator || 'sip';
+let lastResult = null;
+let lastInputs = null;
 
 try {
   const savedCurrency = localStorage.getItem('financehub-currency');
@@ -92,7 +94,7 @@ if (!document.querySelector('#calculator-error')) {
   form.insertAdjacentHTML('beforeend', '<p class="calculator-error" id="calculator-error" role="alert" hidden></p>');
 }
 if (!form.querySelector('.live-update-note')) {
-  form.insertAdjacentHTML('beforeend', '<p class="live-update-note">Results update as you change an input.</p>');
+  form.insertAdjacentHTML('beforeend', '<p class="live-update-note">Enter your values, then click Calculate estimate to see your result.</p>');
 }
 if (!document.querySelector('#calculation-assumptions')) {
   form.insertAdjacentHTML('beforeend', '<p class="calculation-assumptions" id="calculation-assumptions"></p>');
@@ -135,10 +137,38 @@ function renderTool(toolId) {
   const count = Object.keys(tools).indexOf(toolId) + 1;
   const countElement = document.querySelector('.tool-count');
   if (countElement) countElement.innerHTML = `${String(count).padStart(2, '0')} <span>/ 05</span>`;
-  updateCalculator();
+  document.querySelector('#calculator-error').hidden = true;
+  document.querySelector('#result-panel').hidden = true;
+  lastResult = null;
+  lastInputs = null;
 }
 
-function renderResult(result) {
+function resultExplanation(inputs, result) {
+  switch (activeTool) {
+    case 'sip': {
+      const invested = result.breakdown[0][1];
+      const growth = result.breakdown[1][1];
+      return `Investing ${money(inputs.monthly)} each month for ${inputs.years} years means ${money(invested)} in total contributions. The estimate adds ${money(growth)} in projected growth.`;
+    }
+    case 'compound':
+    case 'lumpsum': {
+      const startingAmount = result.breakdown[0][1];
+      const growth = result.breakdown[1][1];
+      const growthLabel = activeTool === 'compound' ? 'interest' : 'growth';
+      return `Starting with ${money(startingAmount)} for ${inputs.years} years, this scenario estimates ${money(result.value)} in total, including ${money(growth)} in ${growthLabel}.`;
+    }
+    case 'crypto':
+      return `After purchase cost, fees, and the optional tax assumption, your estimated net profit or loss is ${money(result.value)}.`;
+    case 'inflation': {
+      const buyingPower = result.breakdown[1][1];
+      return `At ${inputs.inflation}% annual inflation for ${inputs.years} years, an item costing ${money(inputs.amount)} today could cost ${money(result.value)}. The unchanged amount would have about ${money(buyingPower)} in today's buying power.`;
+    }
+    default:
+      return 'This estimate uses the values you entered. The table below shows how the result is calculated.';
+  }
+}
+
+function renderResult(result, inputs) {
   document.querySelector('#result-label').textContent = result.label;
   document.querySelector('#result-value').textContent = money(result.value);
   const breakdown = document.querySelector('#result-breakdown');
@@ -151,10 +181,24 @@ function renderResult(result) {
     summaryHeading.textContent = 'Summary';
     document.querySelector('#result-panel').insertBefore(summaryHeading, breakdown);
   }
-  document.querySelector('#result-breakdown').innerHTML = result.breakdown.map(([label, amount]) => `
-    <div class="breakdown-item"><span>${label}</span><strong>${money(amount)}</strong></div>
-  `).join('');
-  document.querySelector('#result-breakdown').classList.toggle('trade-breakdown', activeTool === 'crypto');
+  let explanation = document.querySelector('#result-explanation');
+  if (!explanation) {
+    explanation = document.createElement('p');
+    explanation.id = 'result-explanation';
+    explanation.className = 'result-explanation';
+    breakdown.before(explanation);
+  }
+  explanation.textContent = resultExplanation(inputs, result);
+  breakdown.innerHTML = `
+    <div class="result-table-wrap">
+      <table class="result-table">
+        <thead><tr><th scope="col">Breakdown</th><th scope="col">Amount</th></tr></thead>
+        <tbody>${result.breakdown.map(([label, amount]) => `
+          <tr><th scope="row">${label}</th><td>${money(amount)}</td></tr>
+        `).join('')}</tbody>
+      </table>
+    </div>
+  `;
 }
 
 function renderSipProjection(monthly, rate, years, inflation) {
@@ -240,15 +284,21 @@ function updateCalculator() {
     return;
   }
   error.hidden = true;
-  document.querySelector('#result-panel').hidden = false;
   const values = Object.fromEntries(new FormData(form).entries());
   const inputs = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Number(value)]));
   try {
     const result = tools[activeTool].calculate(inputs);
     const hasInvalidResult = ![result.value, ...result.breakdown.map(([, amount]) => amount)].every(Number.isFinite);
     if (hasInvalidResult) throw new Error('The calculation is outside the supported range.');
-    renderResult(result);
+    lastResult = result;
+    lastInputs = inputs;
+    renderResult(result, inputs);
+    document.querySelector('#result-panel').hidden = false;
+    const note = form.querySelector('.live-update-note');
+    if (note) note.textContent = 'Estimate calculated. Change any value and calculate again to update it.';
   } catch (calculationError) {
+    lastResult = null;
+    lastInputs = null;
     error.hidden = false;
     error.textContent = calculationError.message || 'Enter valid values to calculate.';
     document.querySelector('#result-panel').hidden = true;
@@ -260,7 +310,14 @@ function updateCalculator() {
 }
 
 buttons.forEach(button => button.addEventListener('click', () => renderTool(button.dataset.tool)));
-form.addEventListener('input', updateCalculator);
+form.addEventListener('input', () => {
+  document.querySelector('#result-panel').hidden = true;
+  document.querySelector('#calculator-error').hidden = true;
+  lastResult = null;
+  lastInputs = null;
+  const note = form.querySelector('.live-update-note');
+  if (note) note.textContent = 'Values changed. Click Calculate estimate to see the updated result.';
+});
 form.addEventListener('submit', event => {
   event.preventDefault();
   updateCalculator();
@@ -271,7 +328,9 @@ currencySelect.addEventListener('change', () => {
   } catch (error) {
     // Calculator formatting remains available without persistent storage.
   }
-  updateCalculator();
+  if (!document.querySelector('#result-panel').hidden && lastResult && lastInputs) {
+    renderResult(lastResult, lastInputs);
+  }
 });
 
 renderTool(activeTool);
