@@ -25,30 +25,30 @@ a { color: inherit; text-decoration: none; }
 .top-nav a:hover, .footer a:hover { color: var(--green-dark); }
 .currency-picker { margin-left: auto; display: flex; align-items: center; gap: 10px; color: #8290a1; font-size: 11px; }
 .currency-picker select { color: var(--ink); border: 1px solid var(--line); border-radius: 7px; background: #fff; padding: 8px 25px 8px 10px; font-size: 12px; }
-.hero { min-height: 420px; padding: 64px max(8vw, 32px) 58px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .65fr); align-items: center; gap: 52px; background: #f7faf9; border-bottom: 1px solid #edf1ef; }
+.hero { min-height: 446px; padding: 75px max(11vw, 32px) 65px; display: flex; align-items: center; justify-content: space-between; background: #f7faf9; overflow: hidden; }
 .hero-copy { max-width: 550px; position: relative; z-index: 1; }
 .eyebrow { margin: 0 0 13px; color: #14875d; font-size: 10px; font-weight: 700; letter-spacing: 1.45px; }
 .eyebrow-dot { display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--green); }
 h1, h2, h3, p { margin-top: 0; }
-h1 { margin-bottom: 17px; color: var(--navy); font: 800 clamp(38px, 5vw, 58px)/1.08 system-ui, sans-serif; letter-spacing: -2.8px; }
+h1 { margin-bottom: 17px; color: var(--navy); font: 800 clamp(38px, 5vw, 57px)/1.12 system-ui, sans-serif; letter-spacing: -2.6px; }
 h1 span { color: #20ad79; }
 .hero-text { max-width: 440px; margin-bottom: 25px; color: #738096; font-size: 14px; line-height: 1.8; }
 .primary-link { display: inline-flex; align-items: center; gap: 20px; padding: 13px 17px; color: #092919; background: var(--green); border-radius: 7px; font-size: 12px; font-weight: 700; transition: transform .2s, background .2s; }
 .primary-link:hover { transform: translateY(-2px); background: #36d39b; }
-.hero-result { width: 100%; max-width: 390px; justify-self: end; padding: 24px; background: #fff; border: 1px solid #dde9e2; border-radius: 12px; box-shadow: 0 20px 60px #19332812; }
-.hero-result-kicker { margin-bottom: 8px; color: #16865d; font-size: 9px; font-weight: 800; letter-spacing: 1.2px; }
-.hero-result > strong { display: block; margin-bottom: 5px; color: #0f3123; font-size: clamp(36px, 5vw, 48px); letter-spacing: -2px; }
-.hero-result > span { display: block; color: #6f7f76; font-size: 12px; }
-.hero-result-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 18px 0 12px; }
-.hero-result-details div { display: grid; gap: 5px; padding: 12px; background: #f5faf7; border: 1px solid #edf3ef; border-radius: 7px; }
-.hero-result-details span { color: #7d8b84; font-size: 10px; }
-.hero-result-details b { color: #203c2f; font-size: 13px; }
-.hero-result small { color: #87958e; font-size: 10px; }
-.workflow-section { max-width: 1110px; margin: 0 auto; padding: 0 max(8vw, 24px) 70px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.workflow-section article { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; padding: 18px; border-top: 1px solid #dfe8e3; }
-.workflow-section article > span { color: #16865d; font-size: 11px; font-weight: 800; }
-.workflow-section h2 { margin: 0 0 6px; color: var(--navy); font-size: 14px; }
-.workflow-section p { margin: 0; color: #8792a2; font-size: 12px; line-height: 1.65; }
+.hero-art { width: 360px; height: 275px; position: relative; margin-right: 4%; display: grid; place-items: center; }
+.orbit { position: absolute; border: 1px solid #dae9e2; border-radius: 50%; transform: rotate(-22deg); }
+.orbit-one { width: 370px; height: 170px; }
+.orbit-two { width: 310px; height: 240px; }
+.hero-card { z-index: 1; width: 258px; height: 180px; padding: 22px; background: white; border: 1px solid #edf1ef; border-radius: 12px; box-shadow: 0 18px 55px #19332812; }
+.hero-card-label { font-size: 8px; font-weight: 700; letter-spacing: 1px; color: #99a4af; }
+.hero-chart { height: 93px; display: flex; align-items: end; gap: 10px; padding: 15px 5px 0; border-bottom: 1px solid #edf1ef; }
+.hero-chart span { flex: 1; border-radius: 3px 3px 0 0; background: #b7efd9; }
+.hero-chart span:nth-child(2n) { background: #27c48a; }
+.hero-card-footer { display: flex; justify-content: space-between; margin-top: 11px; color: #83918e; font-size: 10px; }
+.trend { color: #16a872; font-size: 18px; }
+.floating-tag { z-index: 2; position: absolute; padding: 10px 13px; color: #486254; background: white; border: 1px solid #e8efeb; border-radius: 7px; box-shadow: 0 8px 25px #20332c0d; font-size: 10px; }
+.tag-top { top: 25px; right: -9px; }
+.tag-bottom { bottom: 18px; left: 8px; }
 .calculator-section { padding: 80px max(8vw, 24px) 83px; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; margin: 0 auto 28px; max-width: 1110px; }
 .section-heading h2, .learn-heading h2 { margin-bottom: 8px; color: var(--navy); font: 700 clamp(24px, 3vw, 31px)/1.25 system-ui, sans-serif; letter-spacing: -.8px; }
@@ -178,7 +178,8 @@ h1 span { color: #20ad79; }
 .footer p, .footer > span { margin: 0; color: #929daa; font-size: 10px; }
 
 @media (max-width: 850px) {
-  .hero { grid-template-columns: minmax(0, 1fr) 300px; padding-right: 6vw; padding-left: 7vw; gap: 24px; }
+  .hero { padding-right: 6vw; padding-left: 7vw; }
+  .hero-art { width: 300px; margin-right: 0; transform: scale(.88); }
   .calculator-layout { grid-template-columns: 210px minmax(0, 1fr); gap: 14px; }
   .calculator-card { padding: 22px; }
   .learn-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -194,8 +195,7 @@ h1 span { color: #20ad79; }
   .currency-picker > span { display: none; }
   .currency-picker select { padding: 6px 14px 6px 5px; font-size: 9px; }
   .hero { min-height: auto; padding: 58px 24px 34px; }
-  .hero { grid-template-columns: 1fr; }
-  .hero-result { max-width: none; justify-self: stretch; }
+  .hero-art { display: none; }
   h1 { font-size: 42px; }
   .hero-text { font-size: 13px; }
   .calculator-section { padding: 57px 16px 60px; }
@@ -247,7 +247,6 @@ h1 span { color: #20ad79; }
 
 @media (max-width: 640px) {
   .top-nav { font-size: 11px; }
-  .workflow-section { grid-template-columns: 1fr; padding: 0 16px 45px; }
   .saved-estimates-section { padding: 28px 16px 55px; }
   .saved-estimates-heading { align-items: start; flex-direction: column; }
   .saved-estimates-heading h2 { font-size: 25px; }
