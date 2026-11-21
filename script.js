@@ -128,9 +128,13 @@ const inputGrid = document.querySelector('#input-grid');
 const buttons = [...document.querySelectorAll('[data-tool]')];
 let activeTool = document.body.dataset.calculator || 'sip';
 
-const savedCurrency = localStorage.getItem('financehub-currency');
-if (savedCurrency && [...currencySelect.options].some(option => option.value === savedCurrency)) {
-  currencySelect.value = savedCurrency;
+try {
+  const savedCurrency = localStorage.getItem('financehub-currency');
+  if (savedCurrency && [...currencySelect.options].some(option => option.value === savedCurrency)) {
+    currencySelect.value = savedCurrency;
+  }
+} catch (error) {
+  // The site still works when browser storage is unavailable.
 }
 
 form.querySelector('.calculate-button')?.remove();
@@ -217,8 +221,180 @@ form.addEventListener('submit', event => {
   updateCalculator();
 });
 currencySelect.addEventListener('change', () => {
-  localStorage.setItem('financehub-currency', currencySelect.value);
+  try {
+    localStorage.setItem('financehub-currency', currencySelect.value);
+  } catch (error) {
+    // Calculator formatting remains available without persistent storage.
+  }
   updateCalculator();
 });
 
 renderTool(activeTool);
+
+function restoreSavedEstimate() {
+  const estimateId = new URLSearchParams(window.location.search).get('saved');
+  if (!estimateId) return;
+
+  const estimate = getSavedEstimates().find(item => item.id === estimateId);
+  if (!estimate || estimate.toolId !== activeTool) return;
+
+  Object.entries(estimate.inputs).forEach(([key, value]) => {
+    const input = document.querySelector(`[name="${key}"]`);
+    if (input) input.value = value;
+  });
+
+  if ([...currencySelect.options].some(option => option.value === estimate.currency)) {
+    currencySelect.value = estimate.currency;
+  }
+
+  updateCalculator();
+  showSaveMessage('Saved estimate restored.');
+}
+
+const STORAGE_KEY = 'financehub-saved-estimates';
+
+function getSavedEstimates() {
+  try {
+    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    return Array.isArray(value) ? value : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveEstimate() {
+  if (!form.checkValidity()) {
+    updateCalculator();
+    return;
+  }
+
+  const values = Object.fromEntries(new FormData(form).entries());
+  const inputs = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Number(value)]));
+  const result = tools[activeTool].calculate(inputs);
+
+  const estimates = getSavedEstimates();
+  estimates.unshift({
+    id: `${Date.now()}-${activeTool}`,
+    toolId: activeTool,
+    title: tools[activeTool].title,
+    currency: currencySelect.value,
+    inputs,
+    label: result.label,
+    value: result.value,
+    savedAt: new Date().toISOString()
+  });
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(estimates.slice(0, 50)));
+  } catch (error) {
+    showSaveMessage('This browser could not save the estimate because local storage is unavailable.');
+    return;
+  }
+
+  showSaveMessage('Estimate saved in this browser.');
+  renderSavedEstimates();
+}
+
+function showSaveMessage(message) {
+  const status = document.querySelector('#save-status');
+  if (!status) return;
+  status.textContent = message;
+  status.hidden = false;
+}
+
+function ensureSaveControls() {
+  const resultPanel = document.querySelector('#result-panel');
+  if (!resultPanel || document.querySelector('#save-estimate')) return;
+
+  const controls = document.createElement('div');
+  controls.className = 'save-estimate-controls';
+  controls.innerHTML = `
+    <button class="save-estimate-button" id="save-estimate" type="button">Save estimate</button>
+    <span class="save-status" id="save-status" role="status" hidden></span>
+  `;
+  resultPanel.appendChild(controls);
+  controls.querySelector('#save-estimate').addEventListener('click', saveEstimate);
+}
+
+ensureSaveControls();
+restoreSavedEstimate();
+
+function formatSavedMoney(value, currency) {
+  const locales = { PKR: 'en-PK', INR: 'en-IN', USD: 'en-US', GBP: 'en-GB', AUD: 'en-AU', CAD: 'en-CA', EUR: 'en-IE' };
+  return new Intl.NumberFormat(locales[currency] || 'en-US', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 2
+  }).format(Number.isFinite(value) ? value : 0);
+}
+
+function renderSavedEstimates() {
+  const list = document.querySelector('#saved-estimate-list');
+  if (!list) return;
+
+  const estimates = getSavedEstimates();
+  const empty = document.querySelector('#saved-estimate-empty');
+  const clear = document.querySelector('#clear-saved-estimates');
+
+  if (!estimates.length) {
+    list.innerHTML = '';
+    if (empty) empty.hidden = false;
+    if (clear) clear.hidden = true;
+    return;
+  }
+
+  if (empty) empty.hidden = true;
+  if (clear) clear.hidden = false;
+
+  list.innerHTML = estimates.map((estimate, index) => {
+    const date = new Date(estimate.savedAt);
+    const dateText = Number.isNaN(date.getTime())
+      ? 'Saved estimate'
+      : date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    const page = {
+      sip: 'sip-calculator.html',
+      compound: 'compound-interest-calculator.html',
+      crypto: 'crypto-profit-calculator.html',
+      lumpsum: 'lump-sum-calculator.html',
+      inflation: 'inflation-calculator.html'
+    }[estimate.toolId] || 'index.html';
+
+    return `
+      <article class="saved-estimate-card">
+        <div>
+          <p class="saved-estimate-date">${dateText}</p>
+          <h3>${estimate.title}</h3>
+          <p class="saved-estimate-label">${estimate.label}</p>
+        </div>
+        <strong class="saved-estimate-value">${formatSavedMoney(estimate.value, estimate.currency)}</strong>
+        <a class="saved-estimate-link" href="${page}?saved=${encodeURIComponent(estimate.id)}" aria-label="Open ${estimate.title}">Open calculator →</a>
+        <button class="remove-saved-estimate" type="button" data-estimate-index="${index}" aria-label="Remove this saved estimate">Remove</button>
+      </article>
+    `;
+  }).join('');
+
+  list.querySelectorAll('[data-estimate-index]').forEach(button => {
+    button.addEventListener('click', () => {
+      const estimates = getSavedEstimates();
+      estimates.splice(Number(button.dataset.estimateIndex), 1);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(estimates));
+      } catch (error) {
+        return;
+      }
+      renderSavedEstimates();
+    });
+  });
+}
+
+const clearSavedButton = document.querySelector('#clear-saved-estimates');
+clearSavedButton?.addEventListener('click', () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    return;
+  }
+  renderSavedEstimates();
+});
+
+renderSavedEstimates();
