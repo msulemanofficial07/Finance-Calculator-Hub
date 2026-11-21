@@ -195,6 +195,12 @@ h1 span { color: #20ad79; }
 .legal-page h2 { margin: 30px 0 8px; color: var(--navy); font: 700 19px system-ui, sans-serif; }
 .legal-page p, .legal-page li { color: #69788a; font-size: 13px; line-height: 1.85; }
 .legal-page .updated { color: #94a0ac; font-size: 11px; }
+.author-heading { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+.author-heading h1 { margin: 0 0 4px; }
+.author-role { margin: 0; color: #16865d; font-size: 13px; font-weight: 700; }
+.author-avatar { width: 72px; height: 72px; display: grid; flex: 0 0 72px; place-items: center; color: #092919; background: #b7efd9; border: 1px solid #91dcbf; border-radius: 50%; font-size: 20px; font-weight: 800; }
+.byline { margin: 0 0 18px; padding-bottom: 12px; color: #8792a2; border-bottom: 1px solid #edf0f2; font-size: 11px; }
+.byline a { color: #17865d; font-weight: 700; }
 .footer { min-height: 100px; padding: 22px max(6.2vw, 24px); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .footer .brand { font-size: 14px; }
 .footer .brand-mark { width: 27px; height: 27px; font-size: 16px; }
