@@ -317,7 +317,6 @@ function ensureSaveControls() {
 }
 
 ensureSaveControls();
-restoreSavedEstimate();
 
 function formatSavedMoney(value, currency) {
   const locales = { PKR: 'en-PK', INR: 'en-IN', USD: 'en-US', GBP: 'en-GB', AUD: 'en-AU', CAD: 'en-CA', EUR: 'en-IE' };
@@ -398,3 +397,4 @@ clearSavedButton?.addEventListener('click', () => {
 });
 
 renderSavedEstimates();
+restoreSavedEstimate();
