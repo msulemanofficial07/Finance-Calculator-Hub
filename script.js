@@ -122,15 +122,18 @@ function renderTool(toolId) {
   document.querySelector('#tool-description').textContent = tool.description;
   document.querySelector('#tool-symbol').textContent = tool.symbol;
   document.querySelector('#calculation-assumptions').textContent = tool.assumption;
-  inputGrid.innerHTML = tool.fields.map(field => `
-    <div class="field"${field.dependsOn ? ` data-depends-on="${field.dependsOn}" data-depends-value="${field.dependsValue}" hidden` : ''}>
-      <label for="${field.id}">${field.label}</label>
-      ${field.type === 'select'
-        ? `<select id="${field.id}" name="${field.id}">${field.options.map(option => `<option value="${option.value}"${option.value === field.value ? ' selected' : ''}>${option.label}</option>`).join('')}</select>`
-        : `<input id="${field.id}" name="${field.id}" type="number" min="${field.min}" max="${field.max}" step="${field.step}" value="${field.value}" required inputmode="decimal">`}
-      <span class="field-hint">${field.hint}</span>
-    </div>
-  `).join('');
+  inputGrid.innerHTML = `
+    <h4 class="input-section-heading">Your details</h4>
+    ${tool.fields.map(field => `
+      <div class="field"${field.dependsOn ? ` data-depends-on="${field.dependsOn}" data-depends-value="${field.dependsValue}" hidden` : ''}>
+        <label for="${field.id}">${field.label}</label>
+        ${field.type === 'select'
+          ? `<select id="${field.id}" name="${field.id}">${field.options.map(option => `<option value="${option.value}"${option.value === field.value ? ' selected' : ''}>${option.label}</option>`).join('')}</select>`
+          : `<input id="${field.id}" name="${field.id}" type="number" min="${field.min}" max="${field.max}" step="${field.step}" value="${field.value}" required inputmode="decimal">`}
+        <span class="field-hint">${field.hint}</span>
+      </div>
+    `).join('')}
+  `;
   updateDependentFields();
   buttons.forEach(button => {
     const isActive = button.dataset.tool === toolId;
