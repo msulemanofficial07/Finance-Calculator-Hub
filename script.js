@@ -84,7 +84,6 @@ try {
   // The site still works when browser storage is unavailable.
 }
 
-form.querySelector('.calculate-button')?.remove();
 if (document.body.dataset.calculator !== 'sip') {
   document.querySelector('.chart-wrap')?.remove();
   document.querySelector('.schedule-details')?.remove();
@@ -142,6 +141,16 @@ function renderTool(toolId) {
 function renderResult(result) {
   document.querySelector('#result-label').textContent = result.label;
   document.querySelector('#result-value').textContent = money(result.value);
+  const breakdown = document.querySelector('#result-breakdown');
+  breakdown.setAttribute('aria-label', 'Calculation summary');
+  let summaryHeading = document.querySelector('#summary-heading');
+  if (!summaryHeading) {
+    summaryHeading = document.createElement('h4');
+    summaryHeading.id = 'summary-heading';
+    summaryHeading.className = 'summary-heading';
+    summaryHeading.textContent = 'Summary';
+    document.querySelector('#result-panel').insertBefore(summaryHeading, breakdown);
+  }
   document.querySelector('#result-breakdown').innerHTML = result.breakdown.map(([label, amount]) => `
     <div class="breakdown-item"><span>${label}</span><strong>${money(amount)}</strong></div>
   `).join('');
@@ -196,13 +205,28 @@ function renderSipProjection(monthly, rate, years, inflation) {
   chartCaption.textContent = `${years} year projection`;
   chartLegend.innerHTML = '<span><i class="legend-contributions"></i>Contributions</span><span><i class="legend-growth"></i>Projected value</span>';
 
-  scheduleHead.innerHTML = '<tr><th>Year</th><th>Contributions</th><th>Projected value</th><th>Inflation-adjusted</th></tr>';
-  scheduleBody.innerHTML = tableRows.map(row => `
+  const durationList = [1, 2, 3, 4, 5, 8, 10, 12, 15, 18, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 35];
+  const durationRows = durationList
+    .filter(duration => duration <= 80)
+    .map(duration => {
+      const result = window.FinanceCalculatorEngine.sip({ monthly, rate, years: duration, inflation });
+      return {
+        duration,
+        invested: monthly,
+        futureValue: result.value
+      };
+    });
+  if (!durationRows.some(row => row.duration === years)) {
+    durationRows.push({ duration: years, invested: monthly, futureValue: window.FinanceCalculatorEngine.sip({ monthly, rate, years, inflation }).value });
+    durationRows.sort((a, b) => a.duration - b.duration);
+  }
+
+  scheduleHead.innerHTML = '<tr><th>Duration</th><th>SIP amount</th><th>Future value</th></tr>';
+  scheduleBody.innerHTML = durationRows.map(row => `
     <tr>
-      <td>${row.year}</td>
+      <td>${row.duration} ${row.duration === 1 ? 'year' : 'years'}</td>
       <td>${money(row.invested)}</td>
       <td>${money(row.futureValue)}</td>
-      <td>${inflation > 0 ? money(row.inflationAdjusted) : 'Not adjusted'}</td>
     </tr>
   `).join('');
 }

@@ -106,6 +106,8 @@ h1 span { color: #20ad79; }
 .schedule-table th, .schedule-table td { padding: 9px 12px; border-top: 1px solid #edf0f2; text-align: right; white-space: nowrap; }
 .schedule-table th:first-child, .schedule-table td:first-child { text-align: left; }
 .calculate-button { min-height: 44px; padding: 10px 15px; border: 0; border-radius: 7px; color: #092919; background: var(--green); font-size: 12px; font-weight: 800; cursor: pointer; }
+.calculate-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px; }
+.summary-heading { margin: 16px 0 10px; color: #53665b; font-size: 14px; }
 .calculation-assumptions, .currency-note { margin: 10px 0 0; padding: 11px 12px; border-radius: 6px; font-size: 13px; line-height: 1.55; }
 .calculation-assumptions { color: #315744; background: #eff8f3; border-left: 3px solid #26c28a; }
 .currency-note { color: #506176; background: #f4f7fa; }
