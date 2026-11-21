@@ -9,7 +9,8 @@ const tools = {
       { id: 'monthly', label: 'Monthly investment', value: 5000, min: 0.01, max: 100000000, step: 'any', hint: 'Your contribution each month' },
       { id: 'rate', label: 'Expected annual return (%)', value: 12, min: -100, max: 100, step: 'any', hint: 'An assumption, not a guarantee' },
       { id: 'years', label: 'Investment period (years)', value: 10, min: 1, max: 80, step: 1, hint: 'How many years you invest' },
-      { id: 'inflation', label: 'Assumed inflation (%)', value: 0, min: 0, max: 100, step: 'any', hint: 'Optional; 0 disables inflation adjustment' }
+      { id: 'adjustInflation', label: 'Adjust for inflation?', type: 'select', value: 'no', options: [{ value: 'no', label: 'No' }, { value: 'yes', label: 'Yes' }], hint: 'Choose Yes to enter an inflation assumption' },
+      { id: 'inflation', label: 'Annual inflation rate (%)', value: '', min: 0, max: 100, step: 'any', dependsOn: 'adjustInflation', dependsValue: 'yes', hint: 'Enter the annual rate to use for this estimate' }
     ],
     calculate: inputs => window.FinanceCalculatorEngine.sip(inputs)
   },
@@ -122,12 +123,15 @@ function renderTool(toolId) {
   document.querySelector('#tool-symbol').textContent = tool.symbol;
   document.querySelector('#calculation-assumptions').textContent = tool.assumption;
   inputGrid.innerHTML = tool.fields.map(field => `
-    <div class="field">
+    <div class="field"${field.dependsOn ? ` data-depends-on="${field.dependsOn}" data-depends-value="${field.dependsValue}" hidden` : ''}>
       <label for="${field.id}">${field.label}</label>
-      <input id="${field.id}" name="${field.id}" type="number" min="${field.min}" max="${field.max}" step="${field.step}" value="${field.value}" required inputmode="decimal">
+      ${field.type === 'select'
+        ? `<select id="${field.id}" name="${field.id}">${field.options.map(option => `<option value="${option.value}"${option.value === field.value ? ' selected' : ''}>${option.label}</option>`).join('')}</select>`
+        : `<input id="${field.id}" name="${field.id}" type="number" min="${field.min}" max="${field.max}" step="${field.step}" value="${field.value}" required inputmode="decimal">`}
       <span class="field-hint">${field.hint}</span>
     </div>
   `).join('');
+  updateDependentFields();
   buttons.forEach(button => {
     const isActive = button.dataset.tool === toolId;
     button.classList.toggle('active', isActive);
@@ -143,12 +147,44 @@ function renderTool(toolId) {
   lastInputs = null;
 }
 
+function updateDependentFields() {
+  document.querySelectorAll('.field[data-depends-on]').forEach(field => {
+    const control = field.querySelector('input, select');
+    const dependency = form.elements.namedItem(field.dataset.dependsOn);
+    const isVisible = dependency.value === field.dataset.dependsValue;
+    field.hidden = !isVisible;
+    control.disabled = !isVisible;
+    control.required = isVisible;
+  });
+}
+
+function getCalculatorInputs() {
+  const values = Object.fromEntries(new FormData(form).entries());
+  const inputs = Object.fromEntries(Object.entries(values).map(([key, value]) => [
+    key,
+    key === 'adjustInflation' ? value : Number(value)
+  ]));
+  if (activeTool === 'sip' && inputs.adjustInflation !== 'yes') inputs.inflation = 0;
+  return inputs;
+}
+
+function calculateEstimate(inputs) {
+  const result = tools[activeTool].calculate(inputs);
+  if (activeTool === 'sip' && inputs.adjustInflation !== 'yes') {
+    result.breakdown = result.breakdown.filter(([label]) => label !== 'Inflation-adjusted value');
+  }
+  return result;
+}
+
 function resultExplanation(inputs, result) {
   switch (activeTool) {
     case 'sip': {
       const invested = result.breakdown[0][1];
       const growth = result.breakdown[1][1];
-      return `Investing ${money(inputs.monthly)} each month for ${inputs.years} years means ${money(invested)} in total contributions. The estimate adds ${money(growth)} in projected growth.`;
+      const inflationNote = inputs.adjustInflation === 'yes'
+        ? ` Inflation adjustment uses your entered rate of ${inputs.inflation}%.`
+        : ' Inflation adjustment is off, so values are shown without an inflation adjustment.';
+      return `Investing ${money(inputs.monthly)} each month for ${inputs.years} years means ${money(invested)} in total contributions. The estimate adds ${money(growth)} in projected growth.${inflationNote}`;
     }
     case 'compound':
     case 'lumpsum': {
@@ -284,10 +320,10 @@ function updateCalculator() {
     return;
   }
   error.hidden = true;
-  const values = Object.fromEntries(new FormData(form).entries());
-  const inputs = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Number(value)]));
+  let inputs;
   try {
-    const result = tools[activeTool].calculate(inputs);
+    inputs = getCalculatorInputs();
+    const result = calculateEstimate(inputs);
     const hasInvalidResult = ![result.value, ...result.breakdown.map(([, amount]) => amount)].every(Number.isFinite);
     if (hasInvalidResult) throw new Error('The calculation is outside the supported range.');
     lastResult = result;
@@ -318,6 +354,9 @@ form.addEventListener('input', () => {
   const note = form.querySelector('.live-update-note');
   if (note) note.textContent = 'Values changed. Click Calculate estimate to see the updated result.';
 });
+form.addEventListener('change', event => {
+  if (event.target.name === 'adjustInflation') updateDependentFields();
+});
 form.addEventListener('submit', event => {
   event.preventDefault();
   updateCalculator();
@@ -342,10 +381,15 @@ function restoreSavedEstimate() {
   const estimate = getSavedEstimates().find(item => item.id === estimateId);
   if (!estimate || estimate.toolId !== activeTool) return;
 
+  if (estimate.toolId === 'sip' && estimate.inputs.adjustInflation === undefined && Number(estimate.inputs.inflation) > 0) {
+    const inflationToggle = form.elements.namedItem('adjustInflation');
+    if (inflationToggle) inflationToggle.value = 'yes';
+  }
   Object.entries(estimate.inputs).forEach(([key, value]) => {
     const input = document.querySelector(`[name="${key}"]`);
     if (input) input.value = value;
   });
+  updateDependentFields();
 
   if ([...currencySelect.options].some(option => option.value === estimate.currency)) {
     currencySelect.value = estimate.currency;
@@ -372,11 +416,10 @@ function saveEstimate() {
     return;
   }
 
-  const values = Object.fromEntries(new FormData(form).entries());
-  const inputs = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Number(value)]));
+  const inputs = getCalculatorInputs();
   let result;
   try {
-    result = tools[activeTool].calculate(inputs);
+    result = calculateEstimate(inputs);
     const hasInvalidResult = ![result.value, ...result.breakdown.map(([, amount]) => amount)].every(Number.isFinite);
     if (hasInvalidResult) throw new Error('The calculation is outside the supported range.');
   } catch (calculationError) {
