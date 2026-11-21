@@ -8,19 +8,25 @@ const tools = {
     fields: [
       { id: 'monthly', label: 'Monthly investment', value: 5000, min: 0.01, max: 100000000, step: 'any', hint: 'Your contribution each month' },
       { id: 'rate', label: 'Expected annual return (%)', value: 12, min: -100, max: 100, step: 'any', hint: 'An assumption, not a guarantee' },
-      { id: 'years', label: 'Investment period (years)', value: 10, min: 1, max: 80, step: 1, hint: 'How many years you invest' }
+      { id: 'years', label: 'Investment period (years)', value: 10, min: 1, max: 80, step: 1, hint: 'How many years you invest' },
+      { id: 'inflation', label: 'Assumed inflation (%)', value: 0, min: 0, max: 100, step: 'any', hint: 'Optional; 0 disables inflation adjustment' }
     ],
-    calculate: ({ monthly, rate, years }) => {
+    calculate: ({ monthly, rate, years, inflation = 0 }) => {
       const monthlyRate = rate / 1200;
       const months = years * 12;
       const futureValue = monthlyRate === 0
         ? monthly * months
         : monthly * Math.expm1(months * Math.log1p(monthlyRate)) / monthlyRate;
       const invested = monthly * months;
+      const inflationAdjusted = futureValue / ((1 + inflation / 100) ** years);
       return {
         label: 'Estimated future value',
         value: futureValue,
-        breakdown: [['Total contributions', invested], ['Estimated growth', futureValue - invested]]
+        breakdown: [
+          ['Total contributions', invested],
+          ['Estimated growth', futureValue - invested],
+          ['Inflation-adjusted value', inflationAdjusted]
+        ]
       };
     }
   },
@@ -138,8 +144,10 @@ try {
 }
 
 form.querySelector('.calculate-button')?.remove();
-document.querySelector('.chart-wrap')?.remove();
-document.querySelector('.schedule-details')?.remove();
+if (document.body.dataset.calculator !== 'sip') {
+  document.querySelector('.chart-wrap')?.remove();
+  document.querySelector('.schedule-details')?.remove();
+}
 if (!document.querySelector('#calculator-error')) {
   form.insertAdjacentHTML('beforeend', '<p class="calculator-error" id="calculator-error" role="alert" hidden></p>');
 }
@@ -199,6 +207,68 @@ function renderResult(result) {
   document.querySelector('#result-breakdown').classList.toggle('trade-breakdown', activeTool === 'crypto');
 }
 
+function renderSipProjection(monthly, rate, years, inflation) {
+  if (activeTool !== 'sip') return;
+
+  const monthlyRate = rate / 1200;
+  const chart = document.querySelector('#chart');
+  const chartCaption = document.querySelector('#chart-caption');
+  const chartLegend = document.querySelector('#chart-legend');
+  const scheduleHead = document.querySelector('#schedule-head');
+  const scheduleBody = document.querySelector('#schedule-body');
+
+  if (!chart || !scheduleHead || !scheduleBody) return;
+
+  const points = [];
+  const tableRows = [];
+  const rowInterval = years > 30 ? 5 : years > 15 ? 2 : 1;
+
+  for (let year = 1; year <= years; year++) {
+    const months = year * 12;
+    const futureValue = monthlyRate === 0
+      ? monthly * months
+      : monthly * Math.expm1(months * Math.log1p(monthlyRate)) / monthlyRate;
+    const invested = monthly * months;
+    points.push({ year, invested, futureValue });
+
+    if (year === 1 || year === years || year % rowInterval === 0) {
+      tableRows.push({ year, invested, futureValue, inflationAdjusted: futureValue / ((1 + inflation / 100) ** year) });
+    }
+  }
+
+  const chartPoints = points.filter((_, index) => index % Math.max(1, Math.ceil(points.length / 12)) === 0);
+  if (chartPoints[chartPoints.length - 1]?.year !== years) chartPoints.push(points[points.length - 1]);
+  const maxValue = Math.max(...chartPoints.map(point => point.futureValue), 1);
+
+  chart.innerHTML = chartPoints.map(point => {
+    const investedHeight = (point.invested / maxValue) * 100;
+    const futureHeight = (point.futureValue / maxValue) * 100;
+    return `
+      <div class="chart-column" title="Year ${point.year}: ${money(point.futureValue)}">
+        <div class="chart-bars" aria-hidden="true">
+          <span class="chart-growth" style="height:${futureHeight}%"></span>
+          <span class="chart-contributions" style="height:${investedHeight}%"></span>
+        </div>
+        <span class="chart-year">Yr ${point.year}</span>
+      </div>
+    `;
+  }).join('');
+  chart.setAttribute('aria-label', `Illustrative monthly investment growth over ${years} years`);
+
+  chartCaption.textContent = `${years} year projection`;
+  chartLegend.innerHTML = '<span><i class="legend-contributions"></i>Contributions</span><span><i class="legend-growth"></i>Projected value</span>';
+
+  scheduleHead.innerHTML = '<tr><th>Year</th><th>Contributions</th><th>Projected value</th><th>Inflation-adjusted</th></tr>';
+  scheduleBody.innerHTML = tableRows.map(row => `
+    <tr>
+      <td>${row.year}</td>
+      <td>${money(row.invested)}</td>
+      <td>${money(row.futureValue)}</td>
+      <td>${inflation > 0 ? money(row.inflationAdjusted) : 'Not adjusted'}</td>
+    </tr>
+  `).join('');
+}
+
 function updateCalculator() {
   const error = document.querySelector('#calculator-error');
   if (!form.checkValidity()) {
@@ -212,6 +282,9 @@ function updateCalculator() {
   const values = Object.fromEntries(new FormData(form).entries());
   const inputs = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Number(value)]));
   renderResult(tools[activeTool].calculate(inputs));
+  if (activeTool === 'sip') {
+    renderSipProjection(inputs.monthly, inputs.rate, inputs.years, inputs.inflation || 0);
+  }
 }
 
 buttons.forEach(button => button.addEventListener('click', () => renderTool(button.dataset.tool)));

@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Estimate monthly investment growth with this free SIP calculator. See total contributions and projected growth using your return and time assumptions.">
+    <meta name="description" content="Calculate SIP future value, total contributions and inflation-adjusted purchasing power with a free monthly investment calculator. Includes a worked example and yearly breakdown.">
     <meta name="theme-color" content="#101b2d">
-    <title>SIP &amp; Monthly Investment Calculator | FinanceHub</title>
+    <title>Free SIP Calculator: Future Value &amp; Inflation-Adjusted Estimate | FinanceHub</title>
     <link rel="canonical" href="https://msulemanofficial07.github.io/Finance-Calculator-Hub/sip-calculator.html">
     <meta property="og:site_name" content="Finance Calculator Hub">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Free SIP Calculator | FinanceHub">
-    <meta property="og:description" content="Estimate how regular monthly investments could grow over time.">
+    <meta property="og:description" content="Estimate monthly SIP growth, compare contributions and projected growth, and adjust for inflation.">
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
   </head>
@@ -24,8 +24,8 @@
       <section class="page-intro"><div class="page-intro-inner">
         <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / <a href="index.html#calculators">Calculators</a> / SIP calculator</nav>
         <p class="eyebrow">MONTHLY INVESTING</p>
-        <h1>Free SIP Calculator</h1>
-        <p class="intro-copy">Estimate how a regular monthly investment might grow over time. Adjust your contribution, assumed annual return and investment period to compare scenarios in the currency you choose.</p>
+        <h1>SIP Calculator</h1>
+        <p class="intro-copy">Estimate the future value of regular monthly contributions. Compare total contributions with projected growth, review a year-by-year schedule, and optionally estimate purchasing power after inflation.</p>
       </div></section>
       <section class="calculator-section"><div class="section-heading"><div><p class="eyebrow">PLAN A REGULAR CONTRIBUTION</p><h2>Explore your monthly investment estimate</h2><p class="section-description">Change an assumption and recalculate to compare possible outcomes.</p></div></div>
         <div class="calculator-layout">
@@ -47,11 +47,13 @@
         <article class="guide-article">
           <h2>What is a systematic investment plan?</h2>
           <p>A systematic investment plan (SIP) is a way to invest a set amount at regular intervals, often monthly. Rather than choosing one large contribution date, an investor makes a series of smaller contributions. This calculator models that schedule; it does not recommend a particular investment or fund.</p>
+          <h2>How it works</h2>
+          <p>Each month, the calculator treats the entered contribution as a new payment, applies the monthly rate implied by the annual assumption and compounds it through the remaining period. The result combines all payments and projected growth. An optional inflation entry can estimate the same amount in today's purchasing power.</p>
           <h2>How to use this SIP calculator</h2>
-          <p>Enter the amount you plan to contribute each month, an assumed annual rate of return and the number of years you expect to invest. Choose a display currency. The result updates as you change the inputs and separates total contributions from projected growth.</p>
-          <ul><li><strong>Monthly investment:</strong> the regular contribution entered for each month.</li><li><strong>Annual return:</strong> a constant scenario assumption, not a forecast.</li><li><strong>Investment period:</strong> the number of years contributions continue.</li></ul>
+          <ol><li><strong>Enter a monthly contribution.</strong> Use an amount that is realistic and repeatable.</li><li><strong>Choose an annual return assumption.</strong> This is an editable scenario, not a forecast or guarantee.</li><li><strong>Set the investment period.</strong> Years are converted into 12 monthly contribution periods.</li><li><strong>Add inflation if useful.</strong> A 0% entry disables the inflation-adjusted display.</li><li><strong>Review the estimate and yearly schedule.</strong> Compare contributions, growth and purchasing power.</li></ol>
           <h2>Formula and assumptions</h2>
           <p>The model applies the annual rate divided by 12, then adds each monthly contribution at the end of the month. For a positive monthly rate, the resulting future value is <span class="formula">P × [((1 + r)<sup>n</sup> − 1) / r]</span>, where P is the contribution, r is the monthly rate and n is the number of contributions. At a zero rate, the result is simply P × n. Contributions are assumed to remain constant; fees, taxes and changing returns are excluded.</p>
+          <p>If inflation is entered, purchasing power is estimated as <span class="formula">Nominal future value ÷ (1 + i)<sup>t</sup></span>, where i is the inflation rate as a decimal and t is the number of years.</p>
           <h2>Interpreting a projection responsibly</h2>
           <p>Investment values can rise or fall, and actual returns may differ substantially from a smooth projection. Try more than one return assumption to see how sensitive the estimate is. Consider your goals, time horizon, costs, risk tolerance and local rules; speak with a qualified professional if you need personal advice.</p>
           <h2>Practical example</h2>
@@ -60,10 +62,14 @@
           <p>The future-value amount is a scenario, not the value you should expect to receive. “Estimated growth” shows the projected amount above your contributions. If the result falls after changing an input, verify the entries and remember that negative or reduced returns may be possible in real markets.</p>
           <h2>Factors to consider</h2>
           <ul><li>The tool assumes equal monthly contributions and a constant annual rate.</li><li>It does not include fund fees, platform charges, taxes, inflation or irregular withdrawals.</li><li>Real investment returns can vary, and markets can produce losses.</li><li>Currency formatting does not account for exchange-rate movements.</li></ul>
+          <h2>SIP versus lump-sum investing</h2>
+          <p>A SIP distributes purchases over a schedule, while lump-sum investing places a larger amount into an investment at once. A regular contribution can help make savings more consistent, but it does not guarantee a better investment result. Compare the approaches using the <a href="lump-sum-calculator.html">lump-sum calculator</a>.</p>
           <div class="guide-faq"><h2>Frequently asked questions</h2>
             <details><summary>Are SIP returns guaranteed?</summary><p>No. This calculator uses a constant rate you choose for illustration. Market returns vary and may be negative.</p></details>
             <details><summary>Does the estimate include fees or taxes?</summary><p>No. Fees, taxes and other investment-specific charges are not included in this estimate.</p></details>
             <details><summary>Can I use this calculator outside India?</summary><p>Yes. Select a display currency and enter values in that currency. The calculation is a general contribution-growth illustration, not country-specific investment or tax guidance.</p></details>
+            <details><summary>What does the inflation-adjusted value show?</summary><p>It converts the nominal future estimate into an approximate purchasing-power amount using the inflation assumption you enter. It does not use a live inflation index or predict future prices.</p></details>
+            <details><summary>Why does the result differ from the amount I contributed?</summary><p>The result includes contributions plus estimated compounding. At a negative or low assumed return, projected growth may be low or negative.</p></details>
           </div>
         </article>
         <aside class="guide-aside"><nav class="related-tools" aria-label="Explore related calculators"><h2>Explore all calculators</h2><a href="compound-interest-calculator.html">Compound interest calculator →</a><a href="crypto-profit-calculator.html">Crypto profit estimator →</a><a href="lump-sum-calculator.html">Lump-sum calculator →</a><a href="inflation-calculator.html">Inflation calculator →</a></nav></aside>

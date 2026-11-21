@@ -83,6 +83,29 @@ h1 span { color: #20ad79; }
 .field input:invalid { border-color: #d77770; }
 .field-hint { color: #9ba5b1; font-size: 12px; }
 .live-update-note { margin: -3px 0 0; color: #52695d; font-size: 13px; }
+.chart-wrap { margin-top: 18px; padding-top: 16px; border-top: 1px solid #e8f0ec; }
+.chart-heading, .chart-legend { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.chart-heading { color: #53665b; font-size: 13px; font-weight: 700; }
+.chart-heading span:last-child { color: #87958e; font-size: 11px; font-weight: 500; }
+.chart-legend { justify-content: flex-start; margin: 12px 0 4px; color: #87958e; font-size: 10px; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.chart-legend i { width: 9px; height: 9px; border-radius: 2px; }
+.legend-contributions { background: #b7efd9; }
+.legend-growth { background: #27c48a; }
+.chart { height: 180px; display: flex; align-items: end; gap: 7px; padding-top: 10px; border-bottom: 1px solid #dde8e2; overflow-x: auto; }
+.chart-column { height: 100%; min-width: 42px; display: grid; grid-template-rows: minmax(0, 1fr) 22px; align-items: end; gap: 4px; flex: 1; }
+.chart-bars { height: 100%; display: flex; align-items: end; justify-content: center; gap: 3px; }
+.chart-bars span { width: 13px; min-height: 2px; border-radius: 3px 3px 0 0; }
+.chart-growth { background: #27c48a; }
+.chart-contributions { background: #b7efd9; }
+.chart-year { color: #87958e; font-size: 9px; text-align: center; }
+.schedule-details { margin-top: 14px; border: 1px solid #e8eef0; border-radius: 7px; }
+.schedule-details summary { padding: 12px 14px; color: #334357; font-size: 12px; font-weight: 700; cursor: pointer; }
+.schedule-wrap { overflow-x: auto; }
+.schedule-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.schedule-table th, .schedule-table td { padding: 9px 12px; border-top: 1px solid #edf0f2; text-align: right; white-space: nowrap; }
+.schedule-table th:first-child, .schedule-table td:first-child { text-align: left; }
+.calculate-button { min-height: 44px; padding: 10px 15px; border: 0; border-radius: 7px; color: #092919; background: var(--green); font-size: 12px; font-weight: 800; cursor: pointer; }
 .calculation-assumptions, .currency-note { margin: 10px 0 0; padding: 11px 12px; border-radius: 6px; font-size: 13px; line-height: 1.55; }
 .calculation-assumptions { color: #315744; background: #eff8f3; border-left: 3px solid #26c28a; }
 .currency-note { color: #506176; background: #f4f7fa; }
